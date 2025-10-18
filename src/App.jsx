@@ -23,6 +23,9 @@ function App() {
         Hello From app  
       </div>
       <Counter />
+      <Counter />
+      <Counter />
+      <Counter />
 
     </>
   )
