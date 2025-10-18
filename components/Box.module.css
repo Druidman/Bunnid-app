@@ -1,0 +1,17 @@
+.box {
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+.box > button{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: inherit;
+}
+.box > button:hover{
+    background-color: var(--bulma-primary);
+}
