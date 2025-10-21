@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@import "./colors.css";
+
+
+
+.button {
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background-color: var(--bg);
+    width: 100%;
+    height: 100%;
+}
+.button:hover{
+    background-color: var(--bg-light);
+}
+
+.mainPage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--bg-dark);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+}
+.card:active {
+    border-color: var(--highlight);
+}
+

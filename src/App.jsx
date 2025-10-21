@@ -60,12 +60,11 @@ function App() {
 
   return (
  
-    <div className={`mainPage is-flex`}>
-      
-      <div>
-        <button className="button is-primary" onClick={()=>addWindow()}>+</button>
+    <div className="mainPage">
+      <div className="w-1/10 h-1/18">
+        <button className="button" onClick={()=>addWindow()}>+</button>
       </div>
-      <div>
+      <div className="w-full h-8/9 bg-inherit">
 
         {windows?.map((item)=>(
        
@@ -78,34 +77,34 @@ function App() {
               zIndex={item.zIndex}
           />
           ))}
-      </div>
-      <nav className="navbar is-fixed-bottom">
-        <div className="navbar-brand">
-            <div className="navbar-item has-text-primary title">
-              Bunnid
-            </div>
+      </div >
+      <nav className="w-full bg-inherit flex items-center justify-between px-6 py-2">
+        {/* Brand */}
+        <div className="text-[var(--text)] text-2xl font-bold">
+          Bunnid
         </div>
-        <div className="navbar-menu">
-          <div className="navbar-start navbarLine is-flex ">
-            <button className="navbar-item is-size-4 has-text-black button has-background-info">
+
+        {/* Menu */}
+        <div className="flex items-center space-x-4">
+          {/* Left buttons */}
+          <div className="flex space-x-2 ">
+            <button className="button px-4 py-2 ">
               Chat
             </button>
-            <button className="navbar-item is-size-4 has-text-black button has-background-info">
+            <button className="button px-4 py-2">
               Call
             </button>
-            <button className="navbar-item is-size-4 has-text-black button has-background-info">
+            <button className="button px-4 py-2">
               Settings
             </button>
           </div>
-          <div className="navbar-end">
-            <button className="is-size-4 navbar-item has-background-danger has-text-white">
-              Log out
-            </button>
-            
-          </div>
         </div>
-
-        
+        <div>
+          {/* Right button */}
+          <button className="!text-[var(--text-muted)] button  px-4 py-2">
+            Log out
+          </button>
+        </div>
       </nav>
       
       

@@ -51,7 +51,10 @@ function Box({onClose, boxContent, onMove, startPosition, zIndex}) {
 
             }}
         > 
-            <button onClick={onClose} className="delete is-large"></button>
+            <div className="w-1/20 h-1/20 absolute right-0 top-0">
+                <button onClick={onClose} className="text-[var(--text-muted)] w-full h-full hover:bg-[var(--bg-light)] rounded-full">x</button>
+            </div>
+            
             {boxContent}
             
         </div>
