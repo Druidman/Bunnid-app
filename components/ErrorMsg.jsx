@@ -1,8 +1,8 @@
-const ErrorMsg = (data) => {
+const ErrorMsg = ({data}) => {
     return (
-        <div>
-            <h1 className="title">Error!</h1>
-            <h1 className="subtitle">{data}</h1>
+        <div className="flex flex-col w-full h-full justify-center items-center">
+            <h1 className="text-[var(--text)] text-[48px]">Error!</h1>
+            <h1 className="text-[var(--text-muted)] text-base">{data}</h1>
         </div>
         
     )

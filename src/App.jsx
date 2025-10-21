@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Box from "../components/Box"
 import './App.css'
 import ErrorMsg from '../components/ErrorMsg'
+import ChatWindow from '../components/ChatWindow'
 
 
 function App() {
@@ -28,18 +29,22 @@ function App() {
     setWindows(prev => [...prev, 
       {
         id: Date.now(),
-        content: `Window`,
+        content: {windowType: "ChatWindow", content: ["siemano", "hola"]},
         position: {x: 100, y: 100},
         zIndex: 0
       }
     ])
   }
-  // const makeWindowContentFromData = (data) => {
-  //   if (!data?.windowType) return <ErrorMsg/>
-  //   if (data.windowType == "ChatWindow"){
-  //     return <ChatWindow></ChatWindow>
-  //   }
-  // }
+  const makeWindowContentFromData = (data) => {
+    console.log(data.content)
+    if (!data?.windowType) return <ErrorMsg data={"Unknown windowType"}/>
+    if (data?.windowType == "ChatWindow"){
+      return <ChatWindow initialData={data.content}></ChatWindow>
+    }
+    else{
+      return data.data
+    }
+  }
 
   useEffect(()=>{
     if (currentlyDraggedWindow == null) return
@@ -71,7 +76,7 @@ function App() {
           <Box 
               key={item.id}
               onClose={()=>removeWindow(item.id)}
-              boxContent={<h1 className="title has-text-warning">{item.content}</h1>}
+              boxContent={makeWindowContentFromData(item.content)}
               onMove={(newPosition)=>handleWindowMove(newPosition, item.id)}
               startPosition={item.position}
               zIndex={item.zIndex}
