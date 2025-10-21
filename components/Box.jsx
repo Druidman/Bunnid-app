@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
+
 import styles from './Box.module.css'
 
 function Box({onClose, boxContent, onMove, startPosition, zIndex}) {
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [position, setPosition] = useState({ x: null, y: null });
     const [isDragging, setIsDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     
@@ -37,22 +38,24 @@ function Box({onClose, boxContent, onMove, startPosition, zIndex}) {
     return (
         
         <div 
-            className={`${styles.box} box pt-3 has-background-black`}
+            className={`${styles.box} card`}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseUp}
 
             style={{
-                left: position.x,
-                top: position.y,
+                left: (position.x == null) ? -1000 : position.x,
+                top: (position.y == null) ? -1000 : position.y,
                 zIndex: zIndex
 
             }}
         > 
             <button onClick={onClose} className="delete is-large"></button>
             {boxContent}
+            
         </div>
+        
         
     )
 }

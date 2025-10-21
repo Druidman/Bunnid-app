@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Box from "../components/Box"
-import styles from './App.module.css'
+import './App.css'
+import ErrorMsg from '../components/ErrorMsg'
 
 
 function App() {
@@ -23,16 +24,23 @@ function App() {
     
   }
 
-  const addWindow = (e) => {
+  const addWindow = () => {
     setWindows(prev => [...prev, 
       {
         id: Date.now(),
-        content: `Move me ${prev.length}`,
+        content: `Window`,
         position: {x: 100, y: 100},
         zIndex: 0
       }
     ])
   }
+  // const makeWindowContentFromData = (data) => {
+  //   if (!data?.windowType) return <ErrorMsg/>
+  //   if (data.windowType == "ChatWindow"){
+  //     return <ChatWindow></ChatWindow>
+  //   }
+  // }
+
   useEffect(()=>{
     if (currentlyDraggedWindow == null) return
 
@@ -52,13 +60,15 @@ function App() {
 
   return (
  
-    <div className={`${styles.mainPage} is-flex`}>
+    <div className={`mainPage is-flex`}>
+      
       <div>
-        <button className="button is-primary" onClick={addWindow}>+</button>
+        <button className="button is-primary" onClick={()=>addWindow()}>+</button>
       </div>
       <div>
 
         {windows?.map((item)=>(
+       
           <Box 
               key={item.id}
               onClose={()=>removeWindow(item.id)}
@@ -67,8 +77,36 @@ function App() {
               startPosition={item.position}
               zIndex={item.zIndex}
           />
-        ))}
+          ))}
       </div>
+      <nav className="navbar is-fixed-bottom">
+        <div className="navbar-brand">
+            <div className="navbar-item has-text-primary title">
+              Bunnid
+            </div>
+        </div>
+        <div className="navbar-menu">
+          <div className="navbar-start navbarLine is-flex ">
+            <button className="navbar-item is-size-4 has-text-black button has-background-info">
+              Chat
+            </button>
+            <button className="navbar-item is-size-4 has-text-black button has-background-info">
+              Call
+            </button>
+            <button className="navbar-item is-size-4 has-text-black button has-background-info">
+              Settings
+            </button>
+          </div>
+          <div className="navbar-end">
+            <button className="is-size-4 navbar-item has-background-danger has-text-white">
+              Log out
+            </button>
+            
+          </div>
+        </div>
+
+        
+      </nav>
       
       
     </div>
