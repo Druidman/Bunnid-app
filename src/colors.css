@@ -5,6 +5,8 @@
     --bg-light: hsl(0 0% 9%);
     --text: hsl(0 0% 95%);
     --text-muted: hsl(300 0% 69%);
+    --text-dark: hsl(0 0% 5%);
+    --text-muted-dark: hsl(100 0% 31%);
     --highlight: hsl(330 0% 39%);
     --border: hsl(0 0% 28%);
     --border-muted: hsl(300 0% 18%);

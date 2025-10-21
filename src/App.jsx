@@ -61,10 +61,10 @@ function App() {
   return (
  
     <div className="mainPage">
-      <div className="w-1/10 h-1/18">
+      <div className="w-[10%] h-[5%]">
         <button className="button" onClick={()=>addWindow()}>+</button>
       </div>
-      <div className="w-full h-8/9 bg-inherit">
+      <div className="w-full h-[90%] bg-inherit">
 
         {windows?.map((item)=>(
        
@@ -78,7 +78,7 @@ function App() {
           />
           ))}
       </div >
-      <nav className="w-full bg-inherit flex items-center justify-between px-6 py-2">
+      <nav className="w-full h-[5%] bg-inherit flex items-center justify-between px-6 py-2">
         {/* Brand */}
         <div className="text-[var(--text)] text-2xl font-bold">
           Bunnid
@@ -101,7 +101,7 @@ function App() {
         </div>
         <div>
           {/* Right button */}
-          <button className="!text-[var(--text-muted)] button  px-4 py-2">
+          <button className="!text-[var(--text-muted)] hover:!bg-[var(--danger)] hover:!text-[var(--text-dark)] button  px-4 py-2">
             Log out
           </button>
         </div>
