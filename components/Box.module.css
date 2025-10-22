@@ -2,11 +2,12 @@
     width: 50%;
     height: 50%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: absolute;
     color: var(--text);
-    overflow: hidden;
+    overflow: scroll;
   
 }
 

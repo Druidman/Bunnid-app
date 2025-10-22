@@ -29,7 +29,24 @@ function App() {
     setWindows(prev => [...prev, 
       {
         id: Date.now(),
-        content: {windowType: "ChatWindow", content: ["siemano", "hola"]},
+        content: {windowType: "ChatWindow", content: [
+          {
+            sender: "user",
+            content: "Helo"
+          },
+          {
+            sender: "other",
+            content: "Siema"
+          },
+          {
+            sender: "user",
+            content: "Yoilo"
+          },
+          {
+            sender: "other",
+            content: "asda"
+          }
+        ]},
         position: {x: 100, y: 100},
         zIndex: 0
       }

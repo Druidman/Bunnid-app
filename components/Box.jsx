@@ -38,7 +38,7 @@ function Box({onClose, boxContent, onMove, startPosition, zIndex}) {
     return (
         
         <div 
-            className={`${styles.box} card`}
+            className={`${styles.box} card !h-[50%] !w-[50%]`}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
@@ -51,11 +51,14 @@ function Box({onClose, boxContent, onMove, startPosition, zIndex}) {
 
             }}
         > 
-            <div className="w-1/20 h-1/20 absolute right-0 top-0">
+            <div className="w-[5%] h-[5%] absolute right-0 top-0">
                 <button onClick={onClose} className="text-[var(--text-muted)] w-full h-full hover:bg-[var(--bg-light)] rounded-full">x</button>
             </div>
+            <div className="h-full w-full flex justify-center items-center p-[20px]">
+                {boxContent}
+            </div>
             
-            {boxContent}
+            
             
         </div>
         

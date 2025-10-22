@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 @import "tailwindcss";
 @import "./colors.css";
 
@@ -42,6 +46,8 @@
     }
     
 }
+
+
 
 
 
