@@ -1,19 +1,23 @@
 
 :root {
-    --bg-dark: hsl(336 0% 1%);
-    --bg: hsl(330 0% 4%);
-    --bg-light: hsl(0 0% 9%);
+    --bg-dark: hsl(0 0% 14%);
+    --bg: hsl(0 0% 18%);
+    --bg-light: hsl(0 0% 22%);
     --text: hsl(0 0% 95%);
-    --text-muted: hsl(300 0% 69%);
+    --text-muted: hsl(0 0% 55%);
     --text-dark: hsl(0 0% 5%);
-    --text-muted-dark: hsl(100 0% 31%);
-    --highlight: hsl(330 0% 39%);
+    --text-muted-dark: hsl(100 0% 40%);
+    
+    --highlight: hsl(0 0% 39%);
     --border: hsl(0 0% 28%);
     --border-muted: hsl(300 0% 18%);
     --primary: hsl(0 66% 75%);
     --secondary: hsl(183 52% 57%);
-    --danger: hsl(9 26% 64%);
+    --danger: hsl(2 50 71);
+    --danger-vibrant: hsl(2 100 50);
+    --danger-hover: hsl(2 40 71);
     --warning: hsl(52 19% 57%);
-    --success: hsl(146 17% 59%);
+    --success: hsl(146 70 71%);
     --info: hsl(217 28% 65%);
+    --accent: hsl(50 100 71)
 }

@@ -15,7 +15,7 @@ function ChatWindow({ initialData }) {
 
     return (
         <div className="w-full h-full flex flex-col justify-around align-center">
-            <div className="w-full h-[90%] bg-[var(--bg-light)] flex flex-col justify-start p-[10px]">
+            <div className="w-full h-[90%] bg-[var(--bg-light)] flex flex-col justify-start p-[10px] rounded-[10px]">
                 {messages.map((item, index)=>(
                     <div key={index} className={`
                         w-[100%] h-[fit-content] 

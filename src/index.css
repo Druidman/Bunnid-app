@@ -41,7 +41,7 @@
         border: 1px solid var(--border);
         border-radius: 20px;
     }
-    .card:active {
+    .card:not(.no-border-highlight):active {
         border-color: var(--highlight);
     }
     

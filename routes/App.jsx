@@ -93,11 +93,10 @@ function App() {
           <Box 
               key={item.id}
               onClose={()=>removeWindow(item.id)}
-              boxContent={makeWindowContentFromData(item.content)}
               onMove={(newPosition)=>handleWindowMove(newPosition, item.id)}
               startPosition={item.position}
               zIndex={item.zIndex}
-          />
+          >{makeWindowContentFromData(item.content)}</Box>
           ))}
       </div >
       <nav className="w-full h-[5%] bg-inherit flex items-center justify-between px-6 py-2">
@@ -123,7 +122,7 @@ function App() {
         </div>
         <div>
           {/* Right button */}
-          <button className="!text-[var(--text-muted)] hover:!bg-[var(--danger)] hover:!text-[var(--text-dark)] button  px-4 py-2">
+          <button className="!text-[var(--text-dark)] hover:!bg-[var(--danger-hover)] !bg-[var(--danger)] button  px-4 py-2">
             Log out
           </button>
         </div>
