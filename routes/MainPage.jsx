@@ -1,14 +1,87 @@
-import { Title, Text, Divider } from "@mantine/core"
+import { Title, Text, Modal, TextInput, PasswordInput, Anchor, Divider } from "@mantine/core"
+import { useDisclosure } from '@mantine/hooks';
+
 import { useNavigate } from "react-router-dom";
 import "./MainPage.css"
 
 import Box from "../components/Box"
+import { useState } from "react";
 
 function MainPage() {
     const navigate = useNavigate()
+    const [opened, { open, close }] = useDisclosure(false)
+    const [modalType, setModalType] = useState("register")
 
   return (
     <div className="w-[100vw] h-[100vh] bg-[var(--bg-dark)] flex justify-center items-center flex-col overflow-scroll ">
+        <Modal 
+            opened={opened} 
+            onClose={close} 
+            title={
+                <Text size="xl" fw={700} className="text-[var(--text)]" >
+                    {modalType == "login" && "Login"}
+                    {modalType == "register" && "Signup"}
+                </Text>
+                
+            }
+            centered
+        >
+            <div className="bg-[var(--bg)] w-full h-[fitcontent]  flex  gap-5 flex-col justify-start items-center">
+                <div className="w-[100%] h-auto  flex gap-5 flex-col">
+                    {modalType == "login" && <> 
+                        <TextInput classNames={{
+                            input: "!bg-[var(--bg)] !text-[var(--text)]"
+                        }}radius="xl" placeholder="Login" />
+                        <PasswordInput classNames={{
+                            input: "!bg-[var(--bg)] !text-[var(--text)]"
+                        }}radius="xl" placeholder="Password"/>
+                        </>
+                    
+                    }
+                    {modalType == "register" && <> 
+                        <TextInput classNames={{
+                            input: "!bg-[var(--bg)] !text-[var(--text)]"
+                        }}radius="xl" placeholder="Name" />
+                        <TextInput classNames={{
+                            input: "!bg-[var(--bg)] !text-[var(--text)]"
+                        }}radius="xl" placeholder="Login" />
+                        <PasswordInput classNames={{
+                            input: "!bg-[var(--bg)] !text-[var(--text)]"
+                        }}radius="xl" placeholder="Password"/>
+                        </>
+                    
+                    }
+                </div>
+                <div className="w-[80%] h-[fitcontent]">
+                    <button className="button !bg-[var(--accent)] !text-[var(--text-dark)]">
+                        {modalType == "login" && <Title order={2} >Login!</Title>}
+                        {modalType == "register" && <Title order={2} >Signup!</Title>}
+                    </button>
+                </div>
+                <div className="w-[100%] h-[fitcontent] flex justify-center">
+                    {modalType == "register" && 
+                        <Text size="xs" className="!text-[var(--text-muted)]">
+                            Already have an account?{" "}
+                            <Anchor href="#" onClick={()=>setModalType("login")}>Login</Anchor>
+                        </Text>
+                    }
+                    {modalType == "login" && 
+                        <Text size="xs" className="!text-[var(--text-muted)]">
+                            Don't have an account?{" "}
+                            <Anchor href="#" onClick={()=>setModalType("register")}>Register</Anchor>
+                        </Text>
+                    }
+                    
+                </div>
+                <div className="w-[100%] h-[fitcontent] flex justify-center flex-col items-center">
+                    <Divider className="w-[80%]" my="xs" label="Or" labelPosition="center" />
+                    <Text className="!text-[var(--text-muted-dark)]">Other options comming soon...</Text>
+                </div>
+                
+                
+                
+            </div>
+        </Modal>
         <div className="absolute top-1 card flex flex-row justify-start items-center p-[10px] w-[90%] no-border-highlight">
             <div className="w-[fit-content] h-full px-[10px] !pr-[20px]">
                 <Title className="text-[var(--accent)]" order={1}>
@@ -47,7 +120,7 @@ function MainPage() {
                     <button 
                         className="button px-[10px] duration-200 !text-[var(--text-dark)] !bg-[var(--accent)] hover:!bg-[inherit] hover:!text-[var(--text-muted)]" 
                         order={1}
-                        onClick={()=>navigate("/app")}
+                        onClick={open}
                     >
                         <Title order={2} >Get started!</Title>
                     </button>

@@ -1,0 +1,19 @@
+.mantine-Modal-header {
+    background-color: var(--bg) !important;
+}
+
+.mantine-Modal-body {
+    background-color: var(--bg)!important;
+}
+
+.mantine-Modal-content {
+    border-radius: 20px !important;
+
+    background-color: var(--bg) !important;
+}
+.mantine-Modal-title {
+    color: var(--text) !important;
+}
+
+
+
