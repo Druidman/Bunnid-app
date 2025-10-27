@@ -53,7 +53,8 @@ function MainPage() {
                     }
                 </div>
                 <div className="w-[80%] h-[fitcontent]">
-                    <button className="button !bg-[var(--accent)] !text-[var(--text-dark)]">
+                    <button className="button !text-[var(--text-dark)] !bg-[var(--accent)] 
+                        duration-300 hover:rounded-[30px] hover:!bg-[var(--info)]">
                         {modalType == "login" && <Title order={2} >Login!</Title>}
                         {modalType == "register" && <Title order={2} >Signup!</Title>}
                     </button>
@@ -91,12 +92,22 @@ function MainPage() {
             <div className="flex-1 flex justify-end ">
                 <div className="w-[fitcontent] mx-[10px]">
                     <button className="button px-[10px]" order={1}>
-                        <Title order={2} className="text-[var(--text-muted)]">Sign up</Title>
+                        <Title 
+                            order={2} className="text-[var(--text-muted)]"
+                            onClick={()=>{
+                                setModalType("register")
+                                open()
+                            }}>Sign up</Title>
                     </button>
                 </div>
                 <div className="w-[fitcontent] ">
                     <button className="button px-[10px] " order={1}>
-                        <Title order={2} className="text-[var(--text-muted)]">Log in</Title>
+                        <Title 
+                            order={2} className="text-[var(--text-muted)] " 
+                            onClick={()=>{
+                                setModalType("login")
+                                open()
+                            }}>Log in</Title>
                     </button>
                 </div>
                 
@@ -105,8 +116,8 @@ function MainPage() {
             
         </div>
         
-        <div className="card p-5 border-3 border-dashed bg-[inherit] flex flex-col no-border-highlight">
-           
+        <div className="card p-5 border-3 border-dashed bg-[inherit] flex flex-col no-border-highlight  z-1">
+            
             <Title className="text-[var(--accent)]" order={1}>
                 Bunnid{" "}
                 <Text component="span" className="!text-[var(--text)]" inherit>
@@ -130,10 +141,10 @@ function MainPage() {
 
            
         </div>   
-        {/* <div className="w-[90%]">
-            <Divider size="xs" />
-            <p>test</p>
-        </div> */}
+        <div className="glowCircle"></div>
+        
+        
+        
         
         
        

@@ -15,5 +15,36 @@
     color: var(--text) !important;
 }
 
+.glowCircle {
+    position: absolute;
+    width: 50vw;
+    height: 50vw;
+    border: 3px dashed var(--bg-light);
+    border-radius: 50%;
+    animation: spinCircleAnim 20s linear infinite;
+
+}
+
+.glowCircle::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 3px dashed var(--accent);
+    border-radius: 50%;
+    filter: blur(10px);
+    opacity: 0;
+    animation: glowCircleAnim 5s ease-in-out infinite;
+}
+
+@keyframes glowCircleAnim {
+    0%, 100% {opacity: 0;}
+    50% {opacity: 1;}
+}
+
+
+@keyframes spinCircleAnim {
+    0% {transform: rotate3d(0,0,1, 0deg);}
+    100% {transform: rotate3d(0,0,1, 360deg);}
+}
 
 
