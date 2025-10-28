@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import AccentButton from "./AccentButton"
 
-const AuthModal = ({returnReason}) => {
+const ReturnToHomeScreenModal = ({returnReason}) => {
     const [opened, { open, close }] = useDisclosure(true)
     const navigate = useNavigate();
 
@@ -31,4 +31,4 @@ const AuthModal = ({returnReason}) => {
     )
 }
 
-export default AuthModal;
+export default ReturnToHomeScreenModal;

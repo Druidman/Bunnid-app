@@ -1,6 +1,6 @@
 import {Title} from "@mantine/core"
 
-const AccentButton = ({onClick, children}) => {
+const AccentButton = ({type, onClick= ()=>{}, children, disabled}) => {
 
 
     return (
@@ -10,6 +10,8 @@ const AccentButton = ({onClick, children}) => {
                 duration-300 hover:rounded-[30px] hover:!bg-[var(--info)]
             " 
             onClick={(e)=>{onClick(e)}}
+            type={type}
+            disabled={disabled}
         >
             <Title order={1} className="text-[var(--text-dark)]">{children}</Title>
         </button>
