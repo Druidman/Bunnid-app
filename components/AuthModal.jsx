@@ -1,17 +1,30 @@
 import { useDisclosure } from "@mantine/hooks"
 import { Title, Text, Modal, TextInput, PasswordInput, Anchor, Divider } from "@mantine/core"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import AccentButton from "./AccentButton"
 
 const AuthModal = ({initModalType, onClose}) => {
-    const [opened, { open, close }] = useDisclosure(false)
+    const [opened, { open, close }] = useDisclosure(true)
     const [modalType, setModalType] = useState("login")
+    const [startAuth, setStartAuth] = useState(false)
+    const navigate = useNavigate()
+
     useEffect(()=>{
         setModalType(initModalType)
     },[initModalType])
 
-    useEffect(()=>{open()}, [])
 
-    const handleAuthButtonClick = (e) =>{}
+    useEffect(()=>{
+        if (!startAuth) return;
+
+        close()
+
+        navigate("/app", {
+            state: {token: ""}
+        })
+    }, [startAuth])
+
 
 
     return (
@@ -57,14 +70,13 @@ const AuthModal = ({initModalType, onClose}) => {
                     }
                 </div>
                 <div className="w-[80%] h-[fitcontent]">
-                    <button 
-                        className="button !text-[var(--text-dark)] !bg-[var(--accent)] 
-                            duration-300 hover:rounded-[30px] hover:!bg-[var(--info)]"
-                        onClick={handleAuthButtonClick}
+                    <AccentButton
+                        onClick={(e)=>setStartAuth(true)}
                     >
                         {modalType == "login" && <Title order={2} >Login!</Title>}
                         {modalType == "register" && <Title order={2} >Signup!</Title>}
-                    </button>
+                    </AccentButton>
+                   
                 </div>
                 <div className="w-[100%] h-[fitcontent] flex justify-center">
                     {modalType == "register" && 

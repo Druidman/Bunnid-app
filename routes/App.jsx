@@ -3,11 +3,19 @@ import Box from "../components/Box"
 import './App.css'
 import ErrorMsg from '../components/ErrorMsg'
 import ChatWindow from '../components/ChatWindow'
+import { useLocation } from 'react-router-dom'
+
+import ReturnToHomeScreenModal from "../components/ReturnToHomeScreenModal"
 
 
-function App() {
+const App = () =>{
+  
+  const location = useLocation()
+  const initData = location.state;
+
   const [windows, setWindows] = useState([])
   const [currentlyDraggedWindow, setCurrentlyDraggedWindow] = useState(null)
+  const [returnToHomeScreen, setReturnToHomeScreen] = useState(false)
   
   const removeWindow = (id) => {
     setWindows(prev => prev.filter(item=> item.id !== id))
@@ -80,9 +88,20 @@ function App() {
 
   }, [currentlyDraggedWindow])
 
+  useEffect(()=>{
+    if (!initData) return;
+
+    if (!initData?.token){
+      setReturnToHomeScreen(true)
+    }
+  },[initData])
   return (
+    
  
     <div className="mainPage">
+      {
+        returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
+      }
       <div className="w-[10%] h-[5%]">
         <button className="button" onClick={()=>addWindow()}>+</button>
       </div>
