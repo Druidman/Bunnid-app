@@ -1,9 +1,10 @@
 import { useDisclosure } from "@mantine/hooks"
-import { Title, Text, Modal, TextInput, PasswordInput, Anchor, Divider } from "@mantine/core"
+import {  Text, Modal, TextInput, PasswordInput, Anchor, Divider } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import AccentButton from "./AccentButton"
+import { BUNNID_API_URL } from "../globals/api"
 
 const AuthModal = ({initModalType, onClose}) => {
     const [opened, { open, close }] = useDisclosure(true)
@@ -70,12 +71,106 @@ const AuthModal = ({initModalType, onClose}) => {
 
     useEffect(()=>{
         if (!startAuth) return;
-       
-        close()
 
-        navigate("/app", {
-            state: {token: ""}
-        })
+        const getUserSessionToken = async () => {
+            let loginData = LoginForm.getValues()
+            fetch(
+                BUNNID_API_URL + "auth/login", 
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        login: loginData.login,
+                        password: loginData.password
+                    })
+                }
+                
+            ).then((response)=>{
+                return response.json()
+            }).then((data)=>{
+                if (!data.STATUS){
+                    console.log("Wrong status in login")
+                    console.log(data.MSG)
+                    return
+    
+                }
+                console.log(data.MSG)
+
+                close()
+                onClose()
+
+                navigate("/app", {
+                    state: {token: data.MSG.token}
+                })
+            }).catch((reason)=>{
+                console.log("ERROR IN LOGIN FETCH")
+                console.log(reason)
+                close()
+                onClose()
+            })
+          
+    
+            
+        }
+        const registerUser = () => {
+            let registerData = RegisterForm.getValues()
+            fetch(
+                BUNNID_API_URL + "auth/register", 
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: registerData.name,
+                        login: registerData.login,
+                        password: registerData.password
+                    })
+                }
+                
+            ).then((response)=>{
+                return response.json()
+            }).then((data)=>{
+                if (!data.STATUS){
+                    console.log("Wrong status in register")
+                    console.log(data.MSG)
+                    
+                    return
+    
+                }
+                console.log(data.MSG)
+                close()
+                onClose()
+            }).catch((reason)=>{
+                console.log("ERROR IN REGISTER FETCH")
+                console.log(reason)
+                close()
+                onClose()
+            })
+            
+            
+            
+        }
+
+        if (modalType == "login"){
+            getUserSessionToken()
+            
+        }
+        else if (modalType == "register"){
+            registerUser()
+            
+        }
+        else {
+            console.log("Wrong modalType")
+            setStartAuth(false)
+            return
+        }
+        setStartAuth(false)
+        
+       
+        
         
     }, [startAuth])
 
