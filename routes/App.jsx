@@ -89,7 +89,7 @@ const App = () =>{
   }, [currentlyDraggedWindow])
 
   useEffect(()=>{
-    if (!initData) return;
+    if (!initData) setReturnToHomeScreen(true);
 
     if (!initData?.token){
       setReturnToHomeScreen(true)
