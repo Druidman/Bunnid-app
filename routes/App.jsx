@@ -4,14 +4,17 @@ import './App.css'
 import ErrorMsg from '../components/ErrorMsg'
 import ChatWindow from '../components/ChatWindow'
 import { useLocation } from 'react-router-dom'
+import { Title } from "@mantine/core"
+import { useNavigate } from 'react-router-dom'
 
 import ReturnToHomeScreenModal from "../components/ReturnToHomeScreenModal"
 
 
 const App = () =>{
-  
+  const navigate = useNavigate()
   const location = useLocation()
   const initData = location.state;
+  const [logout, setLogout] = useState(false)
 
   const [windows, setWindows] = useState([])
   const [currentlyDraggedWindow, setCurrentlyDraggedWindow] = useState(null)
@@ -95,6 +98,13 @@ const App = () =>{
       setReturnToHomeScreen(true)
     }
   },[initData])
+  useEffect(()=>{
+    if (!logout) return;
+
+    navigate("/")
+    // TODO remove token from db
+    
+  },[logout])
   return (
     
  
@@ -102,9 +112,7 @@ const App = () =>{
       {
         returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
       }
-      <div className="w-[10%] h-[5%]">
-        <button className="button" onClick={()=>addWindow()}>+</button>
-      </div>
+      
       <div className="w-full h-[90%] bg-inherit">
 
         {windows?.map((item)=>(
@@ -118,34 +126,19 @@ const App = () =>{
           >{makeWindowContentFromData(item.content)}</Box>
           ))}
       </div >
-      <nav className="w-full h-[5%] bg-inherit flex items-center justify-between px-6 py-2">
-        {/* Brand */}
-        <div className="text-[var(--text)] text-2xl font-bold">
-          Bunnid
-        </div>
+      <div className="box absolute left-0 bottom-1 w-full h-auto p-[5px] flex flex-row gap-5 ">
+          <Title order={1} className='text-[var(--accent)]'>Bunnid</Title>
+          <div className="w-full h-full flex flex-row">
+            <div className='w-full'>
 
-        {/* Menu */}
-        <div className="flex items-center space-x-4">
-          {/* Left buttons */}
-          <div className="flex space-x-2 ">
-            <button className="button px-4 py-2 ">
-              Chat
+            </div>
+            
+            <button className='button !w-auto p-1'>
+              <Title order={2} className='text-[var(--danger)]' onClick={()=>setLogout(true)}>Logout</Title>
             </button>
-            <button className="button px-4 py-2">
-              Call
-            </button>
-            <button className="button px-4 py-2">
-              Settings
-            </button>
+            
           </div>
-        </div>
-        <div>
-          {/* Right button */}
-          <button className="!text-[var(--text-dark)] hover:!bg-[var(--danger-hover)] !bg-[var(--danger)] button  px-4 py-2">
-            Log out
-          </button>
-        </div>
-      </nav>
+      </div>
       
       
     </div>
