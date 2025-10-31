@@ -2,7 +2,7 @@ import {useEffect, useRef } from "react"
 import useWebSocket from "react-use-websocket";
 import { BUNNID_API_URL_WS } from '../globals/api'
 
-const  WebSocket = ({onNewMessage, messageToSend}) => {
+const  WebSocket = ({onNewMessage, messageToSend, token}) => {
     const wsRef = useRef(null);
 
     const { getWebSocket, readyState, sendMessage } = useWebSocket(BUNNID_API_URL_WS, {

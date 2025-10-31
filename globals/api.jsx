@@ -2,3 +2,31 @@
 
 export const BUNNID_API_URL = (import.meta.env.VITE_DEBUG == "true") ? import.meta.env.VITE_BUNNID_API_URL_DEBUG : import.meta.env.VITE_BUNNID_API_URL
 export const BUNNID_API_URL_WS = (import.meta.env.VITE_DEBUG == "true") ? import.meta.env.VITE_BUNNID_API_URL_WS_DEBUG : import.meta.env.VITE_BUNNID_API_URL_WS
+
+
+const WS_MSG = (type, status, msg) => ({
+    TYPE: type,
+    STATUS: status,
+    MSG: msg
+});
+
+const REQUEST_TOKEN_MSG_REQ_TYPE = "REQUEST_TOKEN_MSG";
+const REQUEST_TOKEN_MSG_RES_TYPE = "REQUEST_TOKEN_MSG";
+const REQUEST_TOKEN_MSG = (msgContent = "") => WS_MSG(REQUEST_TOKEN_MSG_REQ_TYPE, true, msgContent);
+
+const ACCESS_GRANTED_MSG_INFO_TYPE = "ACCESS_GRANTED_MSG_INFO_TYPE";
+const ACCESS_GRANTED_MSG = WS_MSG(ACCESS_GRANTED_MSG_INFO_TYPE, true, "");
+
+const ACCESS_DENIED_MSG_INFO_TYPE = "ACCESS_DENIED_MSG_INFO_TYPE";
+const ACCESS_DENIED_MSG = WS_MSG(ACCESS_DENIED_MSG_INFO_TYPE, true, "");
+
+export {
+    WS_MSG,
+    REQUEST_TOKEN_MSG_REQ_TYPE,
+    REQUEST_TOKEN_MSG_RES_TYPE,
+    REQUEST_TOKEN_MSG,
+    ACCESS_GRANTED_MSG_INFO_TYPE,
+    ACCESS_GRANTED_MSG,
+    ACCESS_DENIED_MSG_INFO_TYPE,
+    ACCESS_DENIED_MSG
+};

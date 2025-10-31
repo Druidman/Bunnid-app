@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import ReturnToHomeScreenModal from "../components/ReturnToHomeScreenModal"
 
 import WebSocket from '../components/WebSocket'
+import { BUNNID_API_URL } from '../globals/api'
 
 
 
@@ -37,6 +38,9 @@ const App = () =>{
 
   const [connectToRTS, setConnectToRTS] = useState(false)
   const [messageToSend, setMessageToSend] = useState("")
+  const [validAppSession, setValidAppSession] = useState(false)
+
+  const [wsRTSToken, setWsRTSToken] = useState("")
   
 
   
@@ -110,10 +114,58 @@ const App = () =>{
       return
 
     }
-    setConnectToRTS(true)
+    setValidAppSession(true)
+    
     
     // connect()
   },[initData])
+
+  useEffect(()=>{
+    if (!validAppSession) return;
+    fetch(
+        BUNNID_API_URL + "session/getRTS", 
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                token: initData.token
+            })
+        }
+        
+    ).then((response)=>{
+     
+        return response.json()
+    }).then((data)=>{
+
+        if (!data.STATUS){
+            console.log("Wrong status in getRTS")
+            console.log(data.MSG)
+            return
+
+        }
+        console.log(data.MSG)
+        if (data.MSG?.token){
+          setWsRTSToken(data.MSG.token)
+        }
+        else {
+          console.log("No token found in rts call")
+        }
+    }).catch((reason)=>{
+        console.log("ERROR IN WSRTS call")
+        console.log(reason)
+        
+    })
+
+    
+  },[validAppSession])
+
+  useEffect(()=>{
+    if (!wsRTSToken) return;
+    setConnectToRTS(true)
+    console.log("Connecting to rts")
+  },[wsRTSToken])
   
   useEffect(()=>{
     if (!logout) return;
@@ -128,7 +180,7 @@ const App = () =>{
  
     <div className="mainPage">
       {
-        connectToRTS && <WebSocket onNewMessage={(msg)=>{console.log("new msg: " + msg)}} messageToSend={messageToSend}/>
+        connectToRTS && <WebSocket token={wsRTSToken} onNewMessage={(msg)=>{console.log("new msg: " + msg)}} messageToSend={messageToSend}/>
       }
       {
         returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
