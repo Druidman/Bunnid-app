@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Box from "../components/Box"
 import './App.css'
 import ErrorMsg from '../components/ErrorMsg'
@@ -9,6 +9,21 @@ import { useNavigate } from 'react-router-dom'
 
 import ReturnToHomeScreenModal from "../components/ReturnToHomeScreenModal"
 
+import WebSocket from '../components/WebSocket'
+
+
+
+const makeWindow = (position, windowType, windowData, zIndex) => {
+  return {
+      id: Date.now(),
+      content: {
+        windowType: windowType, 
+        content: windowData
+      },
+      position: position,
+      zIndex: zIndex
+    }
+}
 
 const App = () =>{
   const navigate = useNavigate()
@@ -19,6 +34,12 @@ const App = () =>{
   const [windows, setWindows] = useState([])
   const [currentlyDraggedWindow, setCurrentlyDraggedWindow] = useState(null)
   const [returnToHomeScreen, setReturnToHomeScreen] = useState(false)
+
+  const [connectToRTS, setConnectToRTS] = useState(false)
+  const [messageToSend, setMessageToSend] = useState("")
+  
+
+  
   
   const removeWindow = (id) => {
     setWindows(prev => prev.filter(item=> item.id !== id))
@@ -36,42 +57,29 @@ const App = () =>{
     
   }
 
-  const addWindow = () => {
-    setWindows(prev => [...prev, 
-      {
-        id: Date.now(),
-        content: {windowType: "ChatWindow", content: [
-          {
-            sender: "user",
-            content: "Helo"
-          },
-          {
-            sender: "other",
-            content: "Siema"
-          },
-          {
-            sender: "user",
-            content: "Yoilo"
-          },
-          {
-            sender: "other",
-            content: "asda"
-          }
-        ]},
-        position: {x: 100, y: 100},
-        zIndex: 0
-      }
-    ])
+  const addWindow = (newWindow) => {
+    setWindows(prev => [...prev, newWindow])
   }
+
   const makeWindowContentFromData = (data) => {
-    console.log(data.content)
     if (!data?.windowType) return <ErrorMsg data={"Unknown windowType"}/>
+
     if (data?.windowType == "ChatWindow"){
       return <ChatWindow initialData={data.content}></ChatWindow>
     }
     else{
       return data.data
     }
+  }
+
+  const makeChatWindow = () => {
+    let window = makeWindow(
+      {x: 100, y: 100},
+      "ChatWindow",
+      [],
+      0
+    )
+    addWindow(window)
   }
 
   useEffect(()=>{
@@ -92,12 +100,21 @@ const App = () =>{
   }, [currentlyDraggedWindow])
 
   useEffect(()=>{
-    if (!initData) setReturnToHomeScreen(true);
+    if (!initData) {
+      setReturnToHomeScreen(true);
+      return
+    }
 
     if (!initData?.token){
       setReturnToHomeScreen(true)
+      return
+
     }
+    setConnectToRTS(true)
+    
+    // connect()
   },[initData])
+  
   useEffect(()=>{
     if (!logout) return;
 
@@ -105,10 +122,14 @@ const App = () =>{
     // TODO remove token from db
     
   },[logout])
+
   return (
     
  
     <div className="mainPage">
+      {
+        connectToRTS && <WebSocket onNewMessage={(msg)=>{console.log("new msg: " + msg)}} messageToSend={messageToSend}/>
+      }
       {
         returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
       }
@@ -128,9 +149,11 @@ const App = () =>{
       </div >
       <div className="box absolute left-0 bottom-1 w-full h-auto p-[5px] flex flex-row gap-5 ">
           <Title order={1} className='text-[var(--accent)]'>Bunnid</Title>
-          <div className="w-full h-full flex flex-row">
-            <div className='w-full'>
-
+          <div className="w-full h-full flex flex-row gap-10">
+            <div className='w-full flex flex-row justify-end'>
+              <button className='button !w-auto p-1'>
+                <Title order={2} className='text-[var(--info)]' onClick={()=>makeChatWindow()}>Chat</Title>
+              </button>
             </div>
             
             <button className='button !w-auto p-1'>

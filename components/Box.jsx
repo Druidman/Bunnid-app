@@ -8,9 +8,6 @@ function Box({onClose, children, onMove, startPosition, zIndex}) {
     const [isDragging, setIsDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [ref, rect] = useResizeObserver();
-    
-
-    
 
     const handleMouseDown = (e) => {
         if (e.target == e.currentTarget){return}
