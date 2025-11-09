@@ -8,7 +8,7 @@ import { useState } from "react";
 import AuthModal from "../components/AuthModal";
 
 function MainPage() {
-    const navigate = useNavigate()
+    const navigate: NavigateFunction = useNavigate()
     const [authOpen, setAuthOpen] = useState(false)
     const [authType, setAuthType] = useState("login")
 

@@ -3,7 +3,7 @@ import { useResizeObserver } from '@mantine/hooks';
 
 import styles from './Box.module.css'
 
-function Box({onClose, children, onMove, startPosition, zIndex}) {
+function Box({onClose, children, onMove, startPosition, zIndex, visible}) {
     const [position, setPosition] = useState({ x: null, y: null });
     const [isDragging, setIsDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -49,7 +49,8 @@ function Box({onClose, children, onMove, startPosition, zIndex}) {
                 style={{
                     left: (position.x == null) ? -1000 : position.x,
                     top: (position.y == null) ? -1000 : position.y,
-                    zIndex: zIndex
+                    zIndex: zIndex,
+                    display: (visible) ? "block" : "none"
 
                 }}
             > 
