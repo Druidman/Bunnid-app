@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom"
 import AccentButton from "./AccentButton"
 import { BUNNID_API_URL } from "../globals/api"
 import { FormInput, PasswordFormInput } from "./FormInputs"
-
-
+import { useGlobals } from "../context/globalsContext"
+import { User }  from "../types/user"
 
 
 const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: Function}) => {
@@ -15,6 +15,7 @@ const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: F
     const [modalType, setModalType] = useState("login")
     const [startAuth, setStartAuth] = useState(false)
     const navigate = useNavigate()
+    const {setUStoken, setUser} = useGlobals()
 
     
     
@@ -85,9 +86,10 @@ const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: F
                 close()
                 onClose()
 
-                navigate("/app", {
-                    state: {token: data.MSG.token}
-                })
+                setUStoken(data.MSG.token)
+                setUser({id: data.MSG.userId})
+
+                navigate("/app")
             }).catch((reason)=>{
                 console.log("ERROR IN LOGIN FETCH")
                 console.log(reason)

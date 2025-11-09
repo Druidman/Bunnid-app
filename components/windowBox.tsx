@@ -1,70 +1,53 @@
 
 import {useState, useEffect} from 'react'
+import BoxModel from "../objects/BoxModel"
+import React from 'react'
+import Box from "./Box"
 
 
-const makeWindow = (position, windowType, windowData, zIndex) => {
-    return {
-        id: Date.now(),
-        content: {
-          windowType: windowType, 
-          content: windowData
-        },
-        position: position,
-        zIndex: zIndex,
-        visible: true
-      }
-}
-
-export default function WindowBox({ newWindow }){
-    const [windows, setWindows] = useState([])
-    const [currentlyDraggedWindow, setCurrentlyDraggedWindow] = useState(null)
+//Why window
 
 
-    const addWindow = (windowToAdd) => {
-        setWindows(prev => [...prev, windowToAdd])
+export default function WindowBox({ newBox } : {newBox?: BoxModel}){
+    const [boxes, setBoxes] = useState<BoxModel[]>([])
+    const [currentlyDraggedBoxId, setCurrentlyDraggedBoxId] = useState<number>(-1)
+
+
+    const addBox = (boxToAdd: BoxModel) => {
+        setBoxes(prev => [...prev, boxToAdd])
     }
-    const removeWindow = (windowToRemove) => {
-        setWindows(prev => prev.map((item)=>{
-            if (windowToRemove == item) return;
-            return item
-        }))
+    const removeBox = (boxToRemove: BoxModel) => {
+        setBoxes(prev => prev.filter((box: BoxModel)=>box.id !== boxToRemove.id))
     }
 
     useEffect(()=>{
-        if (!newWindow) return;
-        addWindow(newWindow)
-    },[newWindow])
+        if (!newBox) return;
+        newBox.onClose = () => removeBox(newBox)
+        addBox(newBox)
+    },[newBox])
 
     useEffect(()=>{
-        if (!currentlyDraggedWindow) return;
-        windows.map((window)=>{
-            if (window.id == currentlyDraggedWindow){
-                window.zIndex = 1
+        if (!currentlyDraggedBoxId) return;
+        boxes.map((box: BoxModel)=>{
+            if (box.id == currentlyDraggedBoxId){
+                box.zIndex = 1
             }
             else {
-                window.zIndex = 0
+                box.zIndex = 0
             }
         })
-    },[currentlyDraggedWindow])
+    },[currentlyDraggedBoxId])
 
     
     return (
         <div className="w-full h-full bg-inherit">
 
-        {windows?.map((box)=>(
-       
-          <Box 
-            key={box.id}
-            onClose={()=>removeWindow(box)}
-            onMove={(newPosition)=>{
-                setCurrentlyDraggedWindow(box.id)
-                box.onMove(newPosition)
-            }}
-            startPosition={box.position}
-            zIndex={box.zIndex}
-            visible={box.visible}
-          >{box.makeContent()}</Box>
-          ))}
-      </div >
+            {
+                boxes?.map((box: BoxModel)=>(
+        
+                    <Box box={box}/>
+                ))
+            }
+        </div >
     )
 }

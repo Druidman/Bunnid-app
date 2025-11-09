@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useDisclosure } from "@mantine/hooks"
 import { LoadingOverlay } from "@mantine/core"
 
-import ConversationModel from "../../objects/ConversationModel"
+import ConversationModel from "../../objects/conversation/ConversationModel"
 
 
 interface ConversationParams {

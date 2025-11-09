@@ -5,7 +5,7 @@ import BoxModel from "../objects/BoxModel"
 
 
 
-function Box({box, children} : {box: BoxModel, children: React.ReactNode}) {
+function Box({box, children} : {box: BoxModel, children?: React.ReactNode}) {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [offset, setOffset] = useState<Position>({x:0, y:0});
     const [ref, rect] = useResizeObserver();

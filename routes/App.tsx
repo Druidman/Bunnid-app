@@ -7,13 +7,18 @@ import { useLocation } from 'react-router-dom'
 import { Title } from "@mantine/core"
 import { useNavigate } from 'react-router-dom'
 
+import WindowBox from "../components/windowBox"
+
 import ReturnToHomeScreenModal from "../components/ReturnToHomeScreenModal"
 
 import WebSocket from '../components/WebSocket'
 import { BUNNID_API_URL } from '../globals/api'
+import { WsMessagePayload } from '../types/WsMessagePayload'
+import WsMessage, {DEFAULTWSMESSAGE} from '../objects/wsMesage'
+import BoxModel from "../objects/BoxModel"
 
 
-
+import { useGlobals } from '../context/globalsContext'
 
 
 const App = () =>{
@@ -26,10 +31,12 @@ const App = () =>{
   const [returnToHomeScreen, setReturnToHomeScreen] = useState(false)
 
   const [connectToRTS, setConnectToRTS] = useState(false)
-  const [messageToSend, setMessageToSend] = useState("")
+  const [messageToSend, setMessageToSend] = useState<WsMessage>(DEFAULTWSMESSAGE)
   const [validAppSession, setValidAppSession] = useState(false)
 
-  const [wsRTSToken, setWsRTSToken] = useState("")
+
+  const [newBox, setNewBox] = useState<BoxModel>()
+  const {UStoken, setRTStoken, RTStoken} = useGlobals()
 
   useEffect(()=>{
     if (!initData) {
@@ -42,10 +49,11 @@ const App = () =>{
       return
 
     }
+   
+    
+    // should make websocket to connect
     setValidAppSession(true)
-    
-    
-    // connect()
+
   },[initData])
 
   useEffect(()=>{
@@ -58,14 +66,14 @@ const App = () =>{
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                token: initData.token
+                token: UStoken
             })
         }
         
     ).then((response)=>{
      
         return response.json()
-    }).then((data)=>{
+    }).then((data: WsMessagePayload)=>{
 
         if (!data.STATUS){
             console.log("Wrong status in getRTS")
@@ -75,7 +83,7 @@ const App = () =>{
         }
         console.log(data.MSG)
         if (data.MSG?.token){
-          setWsRTSToken(data.MSG.token)
+          setRTStoken(data.MSG.token)
         }
         else {
           console.log("No token found in rts call")
@@ -90,62 +98,55 @@ const App = () =>{
   },[validAppSession])
 
   useEffect(()=>{
-    if (!wsRTSToken) return;
+    if (!RTStoken) return;
     setConnectToRTS(true)
-    console.log("Connecting to rts")
-  },[wsRTSToken])
+    console.log("Connecting to RTS")
+  },[RTStoken])
   
   useEffect(()=>{
     if (!logout) return;
 
     navigate("/")
-    // TODO remove token from db
+    // TODO remove tokenS from db
     
   },[logout])
 
   return (
     
- 
-    <div className="mainPage">
-      {
-        connectToRTS && <WebSocket token={wsRTSToken} onNewMessage={(msg)=>{console.log("new msg: " + msg)}} messageToSend={messageToSend}/>
-      }
-      {
-        returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
-      }
-      
-      <div className="w-full h-[90%] bg-inherit">
 
-        {windows?.map((item)=>(
-       
-          <Box 
-              key={item.id}
-              onClose={()=>toggleVisible(item.id)}
-              onMove={(newPosition)=>handleWindowMove(newPosition, item.id)}
-              startPosition={item.position}
-              zIndex={item.zIndex}
-              visible={item.visible}
-          >{makeWindowContentFromData(item.content)}</Box>
-          ))}
-      </div >
-      <div className="box absolute left-0 bottom-1 w-full h-auto p-[5px] flex flex-row gap-5 ">
-          <Title order={1} className='text-[var(--accent)]'>Bunnid</Title>
-          <div className="w-full h-full flex flex-row gap-10">
-            <div className='w-full flex flex-row justify-end'>
+      <div className="mainPage">
+        {
+          connectToRTS && <WebSocket onNewMessage={(msg)=>{console.log("new msg: " + msg)}} messageToSend={messageToSend}/>
+        }
+        {
+          returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
+        }
+        <div className='w-full h-[90%]'>
+          <WindowBox newBox={newBox}/>
+        </div>
+        
+        <div className="box absolute left-0 bottom-1 w-full h-auto p-[5px] flex flex-row gap-5 ">
+            <Title order={1} className='text-[var(--accent)]'>Bunnid</Title>
+            <div className="w-full h-full flex flex-row gap-10">
+              <div className='w-full flex flex-row justify-end'>
+                <button className='button !w-auto p-1'>
+                  <Title order={2} className='text-[var(--info)]' onClick={()=>{
+                    
+                  }}>Chat</Title>
+                </button>
+              </div>
+              
               <button className='button !w-auto p-1'>
-                <Title order={2} className='text-[var(--info)]' onClick={()=>openChatWindow()}>Chat</Title>
+                <Title order={2} className='text-[var(--danger)]' onClick={()=>setLogout(true)}>Logout</Title>
               </button>
+              
             </div>
-            
-            <button className='button !w-auto p-1'>
-              <Title order={2} className='text-[var(--danger)]' onClick={()=>setLogout(true)}>Logout</Title>
-            </button>
-            
-          </div>
+        </div>
+        
+        
       </div>
-      
-      
-    </div>
+  
+    
       
     
   )

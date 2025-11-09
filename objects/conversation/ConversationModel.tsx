@@ -1,27 +1,29 @@
-import BoxModel from "./BoxModel"
-import Conversation from "../components/windows/ConversationWindow"
-import { BUNNID_API_URL } from "../globals/api"
-import { User } from "../types/user";
-import { ConversationMessage } from "../types/message";
-import { Position } from "../types/position";
+import BoxModel from "../BoxModel"
+import Conversation from "../../components/windows/ConversationWindow"
+import { BUNNID_API_URL } from "../../globals/api"
+import { User } from "../../types/user";
+import { ConversationMessage } from "../../types/message";
+import { Position } from "../../types/position";
 
 export default class ConversationModel extends BoxModel{
     user: User;
     conversationId: number = -1;
-    userSessionToken: string = "";
+    conversationName: string = "";
     messages: ConversationMessage[] = []
+    members: User[] = [];
+    userSessionToken: number;
     
     constructor(
         position: Position, 
-        onClose: ()=>void,
         conversationId: number, 
-        user: User, 
-        userSessionToken: string
+        user: User,
+        userSessionToken: number
+        
     ) {
-        super(position, onClose)
+        super(position)
         this.conversationId = conversationId
-        this.userSessionToken = userSessionToken
         this.user = user
+        this.userSessionToken = userSessionToken
     }
 
     fetchMessages() : void{

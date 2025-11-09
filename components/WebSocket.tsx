@@ -2,19 +2,20 @@ import {useEffect, useRef } from "react"
 import useWebSocket from "react-use-websocket";
 import { BUNNID_API_URL_WS } from '../globals/api'
 import WsMessageType from "../objects/wsMessageType"
-import WsMessage from "../objects/wsMesage";
+import WsMessage, {DEFAULTWSMESSAGE} from "../objects/wsMesage";
 import { WsMessagePayload } from "../types/WsMessagePayload";
 import { WebSocketHook, WebSocketLike } from "react-use-websocket/dist/lib/types";
-
+import { useGlobals } from "../context/globalsContext";
 
 type WebSocketParams = {
     onNewMessage: (msg: WsMessagePayload)=>void;
     messageToSend: WsMessage; 
-    token: string;
+
 }
 
-const  WebSocket = ( {onNewMessage, messageToSend, token} : WebSocketParams) => {
+const  WebSocket = ( {onNewMessage, messageToSend} : WebSocketParams) => {
     const wsRef = useRef<WebSocketLike>(null);
+    const {RTStoken} = useGlobals();
 
     const { getWebSocket, readyState, sendMessage } = useWebSocket(BUNNID_API_URL_WS, {
         
@@ -32,7 +33,7 @@ const  WebSocket = ( {onNewMessage, messageToSend, token} : WebSocketParams) => 
             let msg: WsMessagePayload = JSON.parse(event.data)
 
             if (msg.TYPE == WsMessageType.REQUEST_TOKEN_MSG_TYPE && msg.STATUS){
-                let msgToSend: WsMessage = new WsMessage(WsMessageType.RETURN_TOKEN_MSG_TYPE, true, token)
+                let msgToSend: WsMessage = new WsMessage(WsMessageType.RETURN_TOKEN_MSG_TYPE, true, RTStoken)
                 sendMessage(msgToSend.getMsgStringified())
             }
             if (msg.TYPE == WsMessageType.ACCESS_DENIED_MSG_INFO_TYPE && msg.STATUS){
@@ -51,11 +52,14 @@ const  WebSocket = ( {onNewMessage, messageToSend, token} : WebSocketParams) => 
 
     useEffect(()=>{
         if (!messageToSend) return;
+        if (messageToSend == DEFAULTWSMESSAGE) return;
+
         console.log("Sending msg: " + messageToSend.getMsg())
         sendMessage(messageToSend.getMsgStringified())
 
 
     }, [messageToSend])
+    return (<></>)
 }
 
 export default WebSocket;
