@@ -1,22 +1,32 @@
 import BoxModel from "./BoxModel"
 import Conversation from "../components/windows/ConversationWindow"
 import { BUNNID_API_URL } from "../globals/api"
+import { User } from "../types/user";
+import { ConversationMessage } from "../types/message";
+import { Position } from "../types/position";
 
 export default class ConversationModel extends BoxModel{
-    user = null
-    conversationId = null
-    userSessionToken = null
-    messages = []
-    constructor(zIndex, visible, position, conversationId, user, userSessionToken) {
-        super(zIndex, visible, position)
+    user: User;
+    conversationId: number = -1;
+    userSessionToken: string = "";
+    messages: ConversationMessage[] = []
+    
+    constructor(
+        position: Position, 
+        onClose: ()=>void,
+        conversationId: number, 
+        user: User, 
+        userSessionToken: string
+    ) {
+        super(position, onClose)
         this.conversationId = conversationId
         this.userSessionToken = userSessionToken
         this.user = user
     }
 
-    fetchMessages(){
+    fetchMessages() : void{
         if (!this.conversationId){
-            return null
+            return 
         }
         fetch(
             BUNNID_API_URL + "service/conversation/getMessages", 
@@ -26,7 +36,7 @@ export default class ConversationModel extends BoxModel{
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    token: userSessionToken
+                    token: this.userSessionToken
                 })
             }
         ).then((response)=>{
@@ -51,12 +61,8 @@ export default class ConversationModel extends BoxModel{
         
     }
 
-    sendMsg(msg){
+    sendMsg(msg: string) : void{
         if (!msg) return;
-
-        conversationId = request.json.get("conversationId")
-        msgContent = request.json.get("msgContent")
-        userId = request.json.get("userId")
 
         fetch(
             BUNNID_API_URL + "service/conversation/send", 
@@ -66,9 +72,9 @@ export default class ConversationModel extends BoxModel{
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    token: userSessionToken,
+                    token: this.userSessionToken,
                     conversationId: this.conversationId,
-                    userId: this.userId,
+                    userId: this.user.id,
                     msgContent: msg
                 })
             }
@@ -89,10 +95,14 @@ export default class ConversationModel extends BoxModel{
             console.error(reason)
        
         })
-        
+     
     }
+    
 
     makeContent() {
-        return <Conversation conversation={this}/>
+        return (
+            <Conversation conversation={this}/>
+        )
+        
     }
 }

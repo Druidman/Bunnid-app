@@ -2,25 +2,21 @@ import { useState, useEffect } from "react"
 import { useDisclosure } from "@mantine/hooks"
 import { LoadingOverlay } from "@mantine/core"
 
-function Conversation({ conversation }) {
-    
-    const [messages, setMessages] = useState([{sender: null, id: 1, content: "Siemano"}])
-    const [loadingVisible, { toggle }] = useDisclosure(true)
-    const [user, setUser] = useState({name: null, id: null})
+import ConversationModel from "../../objects/ConversationModel"
 
+
+interface ConversationParams {
+    conversation: ConversationModel;
+}
+
+function Conversation({ conversation } : ConversationParams) {
+    const [loadingVisible, { toggle }] = useDisclosure(true)
 
     useEffect(()=>{
         if (!conversation) return;
-        // get messages
+        conversation.fetchMessages() // TODO ADD SOME CALLBACK OR SMTH
     },[conversation])
-
-    useEffect(()=>{
-        console.log(user)
-        if (!user) return
-        setUser(user)
-    },[user])
     
-
     return (
 
         <div className="w-full h-full flex flex-col justify-around align-center">
@@ -33,12 +29,12 @@ function Conversation({ conversation }) {
             />
             <div className="w-full h-full flex flex-col justify-around align-center">
                 <div className="w-full h-[90%] bg-[var(--bg-light)] gap-2 flex flex-col justify-start p-[10px] rounded-[10px]">
-                    {messages.map((item, index)=>(
+                    {conversation.messages?.map((msg, index)=>(
                         <div key={index} className={`
                             w-[100%] h-[fit-content] 
 
                             flex
-                            ${(item?.sender == user ? "justify-end" : "justify-start")}
+                            ${(msg.userId == conversation.user.id ? "justify-end" : "justify-start")}
                         
                             `}
                         >
@@ -49,7 +45,7 @@ function Conversation({ conversation }) {
                                 rounded-[20px] 
                                 bg-[var(--bg-dark)] 
                                 text-[var(--text)]"
-                            >{item.content}</h1>
+                            >{msg.content}</h1>
                         </div>
                     ))}
 

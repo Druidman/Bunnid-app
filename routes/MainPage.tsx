@@ -3,14 +3,14 @@ import { Title, Text} from "@mantine/core"
 import { useNavigate } from "react-router-dom";
 import "./MainPage.css"
 
-import { BUNNID_API_URL, BUNNID_API_URL_WS } from "../globals/api"
 import { useState } from "react";
 import AuthModal from "../components/AuthModal";
 
 function MainPage() {
-    const navigate: NavigateFunction = useNavigate()
-    const [authOpen, setAuthOpen] = useState(false)
-    const [authType, setAuthType] = useState("login")
+
+    const navigate = useNavigate()
+    const [authOpen, setAuthOpen] = useState<boolean>(false)
+    const [authType, setAuthType] = useState<string>("login")
 
 
     return (
@@ -27,7 +27,7 @@ function MainPage() {
                 </div>
                 <div className="flex-1 flex justify-end ">
                     <div className="w-[fitcontent] mx-[10px]">
-                        <button className="button px-[10px]" order={1}>
+                        <button className="button px-[10px]">
                             <Title 
                                 order={2} className="text-[var(--text-muted)]"
                                 onClick={()=>{
@@ -37,7 +37,7 @@ function MainPage() {
                         </button>
                     </div>
                     <div className="w-[fitcontent] ">
-                        <button className="button px-[10px] " order={1}>
+                        <button className="button px-[10px] ">
                             <Title 
                                 order={2} className="text-[var(--text-muted)] " 
                                 onClick={()=>{
@@ -66,7 +66,6 @@ function MainPage() {
                     <div className="w-[50%]">
                         <button 
                             className="button px-[10px] duration-200 !text-[var(--text-dark)] !bg-[var(--accent)] hover:!bg-[inherit] hover:!text-[var(--text-muted)]" 
-                            order={1}
                             onClick={()=>{
                                 setAuthType("login")
                                 setAuthOpen(true)

@@ -1,11 +1,20 @@
 import {useEffect, useRef } from "react"
 import useWebSocket from "react-use-websocket";
 import { BUNNID_API_URL_WS } from '../globals/api'
-import WsMessageType from "../globals/wsMessageType"
-import WsMessage from "../globals/wsMesage";
+import WsMessageType from "../objects/wsMessageType"
+import WsMessage from "../objects/wsMesage";
+import { WsMessagePayload } from "../types/WsMessagePayload";
+import { WebSocketHook, WebSocketLike } from "react-use-websocket/dist/lib/types";
 
-const  WebSocket = ({onNewMessage, messageToSend, token}) => {
-    const wsRef = useRef(null);
+
+type WebSocketParams = {
+    onNewMessage: (msg: WsMessagePayload)=>void;
+    messageToSend: WsMessage; 
+    token: string;
+}
+
+const  WebSocket = ( {onNewMessage, messageToSend, token} : WebSocketParams) => {
+    const wsRef = useRef<WebSocketLike>(null);
 
     const { getWebSocket, readyState, sendMessage } = useWebSocket(BUNNID_API_URL_WS, {
         
@@ -18,12 +27,12 @@ const  WebSocket = ({onNewMessage, messageToSend, token}) => {
         },
         onMessage: (event) => {
             
-            let msg = event.data
+       
 
-            msg = JSON.parse(msg)
+            let msg: WsMessagePayload = JSON.parse(event.data)
 
             if (msg.TYPE == WsMessageType.REQUEST_TOKEN_MSG_TYPE && msg.STATUS){
-                let msgToSend = new WsMessage(WsMessageType.RETURN_TOKEN_MSG_TYPE, true, "")
+                let msgToSend: WsMessage = new WsMessage(WsMessageType.RETURN_TOKEN_MSG_TYPE, true, token)
                 sendMessage(msgToSend.getMsgStringified())
             }
             if (msg.TYPE == WsMessageType.ACCESS_DENIED_MSG_INFO_TYPE && msg.STATUS){
@@ -34,7 +43,7 @@ const  WebSocket = ({onNewMessage, messageToSend, token}) => {
             }
 
 
-            onNewMessage(event.data)
+            onNewMessage(msg)
 
         }
        
@@ -42,8 +51,8 @@ const  WebSocket = ({onNewMessage, messageToSend, token}) => {
 
     useEffect(()=>{
         if (!messageToSend) return;
-        console.log("Sending msg: " + messageToSend)
-        sendMessage(messageToSend)
+        console.log("Sending msg: " + messageToSend.getMsg())
+        sendMessage(messageToSend.getMsgStringified())
 
 
     }, [messageToSend])

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import AccentButton from "./AccentButton"
 
-const ReturnToHomeScreenModal = ({returnReason}) => {
+const ReturnToHomeScreenModal = ({returnReason} : {returnReason: string}) => {
     const [opened, { open, close }] = useDisclosure(true)
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const ReturnToHomeScreenModal = ({returnReason}) => {
             centered
         >
             <div className="bg-[var(--bg)] w-full h-[fitcontent]  flex  gap-5 flex-col justify-start items-center">
-                <Text order={1} className="!text-[var(--text-muted)]">{returnReason}</Text>
+                <Text className="!text-[var(--text-muted)]">{returnReason}</Text>
                 <div className="w-full h-[fitcontent]">
                     <AccentButton onClick={()=>navigate("/")}>Home screen</AccentButton>
                 </div>

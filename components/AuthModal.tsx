@@ -1,39 +1,23 @@
 import { useDisclosure } from "@mantine/hooks"
 import {  Text, Modal, TextInput, PasswordInput, Anchor, Divider } from "@mantine/core"
-import { useForm } from "@mantine/form"
+import { useForm, UseFormInput, UseFormReturnType } from "@mantine/form"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import AccentButton from "./AccentButton"
 import { BUNNID_API_URL } from "../globals/api"
+import { FormInput, PasswordFormInput } from "./FormInputs"
 
-const AuthModal = ({initModalType, onClose}) => {
+
+
+
+const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: Function}) => {
     const [opened, { open, close }] = useDisclosure(true)
     const [modalType, setModalType] = useState("login")
     const [startAuth, setStartAuth] = useState(false)
     const navigate = useNavigate()
 
-    const FormInput = ({keyVal, placeholder, form}) => {
-        return <TextInput 
-                    classNames={{
-                        input: "!bg-[var(--bg)] !text-[var(--text)] !w-full"
-                    }}
-                    radius="xl" 
-                    placeholder={placeholder}
-                    key={form.key(keyVal)}
-                    {...form.getInputProps(keyVal)}
-                />
-    }
-    const FormPasswordInput = ({keyVal, placeholder, form}) => {
-        return <PasswordInput 
-                    classNames={{
-                        input: "!bg-[var(--bg)] !text-[var(--text)] !w-full"
-                    }}
-                    radius="xl" 
-                    placeholder={placeholder}
-                    key={form.key(keyVal)}
-                    {...form.getInputProps(keyVal)}
-                />
-    }
+    
+    
 
     const RegisterForm = useForm({
         mode: 'uncontrolled',
@@ -195,15 +179,12 @@ const AuthModal = ({initModalType, onClose}) => {
                     {modalType == "login" && 
                         <form className="flex gap-5 flex-col w-full h-auto" onSubmit={LoginForm.onSubmit(()=>setStartAuth(true))}> 
                             <FormInput keyVal="login" placeholder="Login" form={LoginForm}/>
-                            <FormPasswordInput keyVal="password" placeholder="Password" form={LoginForm}/>
+                            <PasswordFormInput keyVal="password" placeholder="Password" form={LoginForm}/>
 
                             <div className="w-full h-auto flex justify-center">
                                 <div className="w-[80%] h-auto">
                                     <AccentButton
-                                
                                         type="submit"
-                                        onClick={()=>{}}
-                            
                                     >
                                         <Text >Login!</Text>
                                     </AccentButton>
@@ -218,7 +199,7 @@ const AuthModal = ({initModalType, onClose}) => {
                         <form className="flex gap-5 flex-col w-full h-auto" onSubmit={RegisterForm.onSubmit(()=>setStartAuth(true))}> 
                             <FormInput keyVal="name" placeholder="Name" form={RegisterForm}/>
                             <FormInput keyVal="login" placeholder="Login" form={RegisterForm}/>
-                            <FormPasswordInput keyVal="password" placeholder="Password" form={RegisterForm}/>
+                            <PasswordFormInput keyVal="password" placeholder="Password" form={RegisterForm}/>
                             <div className="w-full h-auto flex justify-center">
                                 <div className="w-[80%] h-auto">
                                     <AccentButton

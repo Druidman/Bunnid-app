@@ -1,7 +1,13 @@
+import { WsMessagePayload } from "../types/WsMessagePayload"
+
 class WsMessage {
-    constructor(type, status, msg) {
-        this.type = type; // WsMessageType
-        this.status = status; // boolean
+    type: string; 
+    status: boolean;
+    msg: string;
+
+    constructor(type: string, status: boolean, msg: string) {
+        this.type = type;
+        this.status = status;
         this.msg = msg;
     }
 
@@ -9,7 +15,7 @@ class WsMessage {
         return JSON.stringify(this.getMsg());
     }
 
-    getMsg() {
+    getMsg() : WsMessagePayload {
         return {
             TYPE: this.type,
             STATUS: this.status,
