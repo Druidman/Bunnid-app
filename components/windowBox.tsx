@@ -10,8 +10,6 @@ import Box from "./Box"
 
 export default function WindowBox({ newBox } : {newBox?: BoxModel}){
     const [boxes, setBoxes] = useState<BoxModel[]>([])
-    const [currentlyDraggedBoxId, setCurrentlyDraggedBoxId] = useState<number>(-1)
-
 
     const addBox = (boxToAdd: BoxModel) => {
         setBoxes(prev => [...prev, boxToAdd])
@@ -26,26 +24,14 @@ export default function WindowBox({ newBox } : {newBox?: BoxModel}){
         addBox(newBox)
     },[newBox])
 
-    useEffect(()=>{
-        if (!currentlyDraggedBoxId) return;
-        boxes.map((box: BoxModel)=>{
-            if (box.id == currentlyDraggedBoxId){
-                box.zIndex = 1
-            }
-            else {
-                box.zIndex = 0
-            }
-        })
-    },[currentlyDraggedBoxId])
-
     
     return (
-        <div className="w-full h-full bg-inherit">
+        <div className="w-full h-full bg-inherit overflow-hidden relative">
 
             {
                 boxes?.map((box: BoxModel)=>(
         
-                    <Box box={box}/>
+                    <Box box={box} key={box.id}/>
                 ))
             }
         </div >

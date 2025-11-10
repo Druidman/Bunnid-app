@@ -10,16 +10,26 @@ import ConversationSelect from "../../components/windows/ConversationSelect.tsx"
 export default class ConversationSelectModel extends BoxModel{
     user: User;
     conversations: ConversationModel[] | [] = [];
-    selectedConversationIndex: number;
+    selectedConversationIndex: number = 0;
     userSessionToken: string;
-    constructor(position: Position, user: User, userSessionToken: string){
+    constructor(position: Position, user: User | null, userSessionToken: string){
         super(position)
-        this.user = user
+        if (user){
+            this.user = user
+        }
+        else{
+            throw new Error("Added null user to conversationSelectModel")
+        }
+        
         this.userSessionToken = userSessionToken
     }
 
-    makeConversationModelsOfData(data: any) : ConversationModel[] | [] {
-        return []
+    private makeConversationModelsOfData(data: any) : ConversationModel[] | [] {
+        let conversations: ConversationModel[] = []
+        for (let conversation of data){
+           
+        }
+        return conversations;
     }
 
     fetchConversations(){

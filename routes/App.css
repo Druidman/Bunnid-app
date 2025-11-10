@@ -6,5 +6,6 @@
     align-items: center;
     flex-direction: column;
     background-color: var(--bg-dark);
+    overflow: hidden;
 }
 

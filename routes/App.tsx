@@ -19,6 +19,7 @@ import BoxModel from "../objects/BoxModel"
 
 
 import { useGlobals } from '../context/globalsContext'
+import ConversationSelectModel from "../objects/conversation/ConversationSelectModel"
 
 
 const App = () =>{
@@ -36,25 +37,18 @@ const App = () =>{
 
 
   const [newBox, setNewBox] = useState<BoxModel>()
-  const {UStoken, setRTStoken, RTStoken} = useGlobals()
+  const {UStoken, setRTStoken, RTStoken, user} = useGlobals()
 
   useEffect(()=>{
-    if (!initData) {
+    if (!UStoken) {
       setReturnToHomeScreen(true);
       return
     }
-
-    if (!initData?.token){
-      setReturnToHomeScreen(true)
-      return
-
-    }
-   
     
-    // should make websocket to connect
+    // should get RTS and make websocket to connect
     setValidAppSession(true)
 
-  },[initData])
+  },[UStoken])
 
   useEffect(()=>{
     if (!validAppSession) return;
@@ -116,22 +110,26 @@ const App = () =>{
 
       <div className="mainPage">
         {
-          connectToRTS && <WebSocket onNewMessage={(msg)=>{console.log("new msg: " + msg)}} messageToSend={messageToSend}/>
+          connectToRTS && <WebSocket onNewMessage={(msg)=>{console.log("new msg: " + msg.MSG)}} messageToSend={messageToSend}/>
         }
         {
           returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
         }
-        <div className='w-full h-[90%]'>
+        <div className='w-full h-full overflow-hidden'>
           <WindowBox newBox={newBox}/>
         </div>
         
-        <div className="box absolute left-0 bottom-1 w-full h-auto p-[5px] flex flex-row gap-5 ">
+        <div className="box absolute left-0 bottom-1 w-full h-auto p-[5px] flex flex-row gap-5 z-1000">
             <Title order={1} className='text-[var(--accent)]'>Bunnid</Title>
             <div className="w-full h-full flex flex-row gap-10">
               <div className='w-full flex flex-row justify-end'>
                 <button className='button !w-auto p-1'>
                   <Title order={2} className='text-[var(--info)]' onClick={()=>{
-                    
+                    setNewBox(new ConversationSelectModel(
+                      {x: 0, y: 0},
+                      user,
+                      UStoken,
+                      ))
                   }}>Chat</Title>
                 </button>
               </div>
