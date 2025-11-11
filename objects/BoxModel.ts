@@ -43,7 +43,7 @@ export default class BoxModel{
             this.listeners.filter((l: BoxListener)=>{l !== listener})
         }
     }
-    private notify() : void{
+    protected notify() : void{
         this.listeners.forEach((l: BoxListener) => { l() })
     }
 

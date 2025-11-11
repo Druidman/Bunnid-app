@@ -15,9 +15,11 @@ function Box({box} : {box: BoxModel}) {
 
     return (
             <div 
-                className={`flex justify-center items-center card h-[50%] w-[50%] `}
+                className={`flex justify-center items-center card h-[50%] w-[50%] no-border-highlight p-[20px]`}
                 onMouseDown={(e)=>{
-             
+                    if (e.target !== e.currentTarget){
+                        return
+                    }
                     setIsDragging(true);
                     setOffset({
                         x: e.clientX - box.position.x,
@@ -26,7 +28,10 @@ function Box({box} : {box: BoxModel}) {
                     box.setToFront()
                 }}
                 onMouseUp={()=>{setIsDragging(false); box.setToBack()}}
-                onMouseLeave={()=>{setIsDragging(false); box.setToBack()}}
+                onMouseLeave={()=>{
+                    
+                    setIsDragging(false); box.setToBack()
+                }}
 
                 onMouseMove={(e)=>{
                     let x = e.clientX - offset.x
@@ -36,8 +41,7 @@ function Box({box} : {box: BoxModel}) {
                         box.onMove({x: x,y: y})
                         console.log("MOVE")
                     }
-                    
-                    
+
                 }}
                 style={{
                     position: "absolute",
@@ -55,7 +59,7 @@ function Box({box} : {box: BoxModel}) {
 
                     }} className="text-[var(--text-muted)] w-full h-full hover:bg-[var(--bg-light)] rounded-full">x</button>
                 </div>
-                <div className="h-full w-full flex justify-center items-center p-[20px]">
+                <div className="h-full w-full flex justify-center items-center">
                     {box.makeContent()}
                 </div>
                 

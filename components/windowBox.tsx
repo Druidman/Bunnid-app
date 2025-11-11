@@ -26,7 +26,9 @@ export default function WindowBox({ newBox } : {newBox?: BoxModel}){
 
     
     return (
-        <div className="w-full h-full bg-inherit overflow-hidden relative">
+        <div 
+            className="w-full h-full bg-inherit overflow-hidden relative"
+        >
 
             {
                 boxes?.map((box: BoxModel)=>(

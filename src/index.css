@@ -28,6 +28,18 @@
     .button:hover{
         background-color: var(--bg-light);
     }
+    .button.accentButton {
+        color: var(--text-dark);
+        
+        
+        background-color: var(--accent);
+        transition: 300ms;
+    }
+    .button.accentButton:hover {
+        border-radius: 30px;
+        background-color: var(--info);
+    }
+    
     
     .mainPage {
         width: 100vw;

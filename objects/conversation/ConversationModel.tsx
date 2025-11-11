@@ -8,22 +8,24 @@ import { Position } from "../../types/position";
 export default class ConversationModel extends BoxModel{
     user: User;
     conversationId: number = -1;
-    conversationName: string = "";
+    conversationTitle?: string = "";
     messages: ConversationMessage[] = []
     members: User[] = [];
-    userSessionToken: number;
+    userSessionToken: string;
     
     constructor(
         position: Position, 
         conversationId: number, 
         user: User,
-        userSessionToken: number
+        userSessionToken: string,
+        conversationTitle?: string
         
     ) {
         super(position)
         this.conversationId = conversationId
         this.user = user
         this.userSessionToken = userSessionToken
+        this.conversationTitle = conversationTitle
     }
 
     fetchMessages() : void{
