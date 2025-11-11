@@ -1,5 +1,5 @@
 import { useDisclosure } from "@mantine/hooks"
-import {  Text, Modal, TextInput, PasswordInput, Anchor, Divider } from "@mantine/core"
+import {  Text, Modal, TextInput, PasswordInput, Anchor, Divider, Title } from "@mantine/core"
 import { useForm, UseFormInput, UseFormReturnType } from "@mantine/form"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -7,7 +7,6 @@ import AccentButton from "./AccentButton"
 import { BUNNID_API_URL } from "../globals/api"
 import { FormInput, PasswordFormInput } from "./FormInputs"
 import { useGlobals } from "../context/globalsContext"
-import { User }  from "../types/user"
 
 
 const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: Function}) => {
@@ -184,13 +183,14 @@ const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: F
                             <PasswordFormInput keyVal="password" placeholder="Password" form={LoginForm}/>
 
                             <div className="w-full h-auto flex justify-center">
-                                <div className="w-[80%] h-auto">
-                                    <AccentButton
-                                        type="submit"
-                                    >
-                                        <Text >Login!</Text>
-                                    </AccentButton>
-                                </div>
+                                
+                                <AccentButton
+                                    type="submit"
+                                    className="!w-[80%]"
+                                >
+                                    <Title order={3}>Login!</Title>
+                                </AccentButton>
+                                
                    
                             </div>
                            
@@ -203,16 +203,16 @@ const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: F
                             <FormInput keyVal="login" placeholder="Login" form={RegisterForm}/>
                             <PasswordFormInput keyVal="password" placeholder="Password" form={RegisterForm}/>
                             <div className="w-full h-auto flex justify-center">
-                                <div className="w-[80%] h-auto">
-                                    <AccentButton
+                               
+                                <AccentButton
+                            
+                                    type="submit"
+                                    className="w-[80%]"
+
+                                >
+                                    <Title order={3}>Sign up!</Title>
+                                </AccentButton>
                                 
-                                        type="submit"
-                                        onClick={()=>{}}
-                             
-                                    >
-                                        <Text >Signup!</Text>
-                                    </AccentButton>
-                                </div>
                    
                             </div>
                             

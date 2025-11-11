@@ -5,6 +5,7 @@ import "./MainPage.css"
 
 import { useState } from "react";
 import AuthModal from "../components/AuthModal";
+import AccentButton from "../components/AccentButton";
 
 function MainPage() {
 
@@ -25,27 +26,27 @@ function MainPage() {
                         Bunnid
                     </Title>
                 </div>
-                <div className="flex-1 flex justify-end ">
-                    <div className="w-[fitcontent] mx-[10px]">
-                        <button className="button px-[10px]">
-                            <Title 
-                                order={2} className="text-[var(--text-muted)]"
-                                onClick={()=>{
-                                    setAuthType("register")
-                                    setAuthOpen(true)
-                                }}>Sign up</Title>
-                        </button>
-                    </div>
-                    <div className="w-[fitcontent] ">
-                        <button className="button px-[10px] ">
-                            <Title 
-                                order={2} className="text-[var(--text-muted)] " 
-                                onClick={()=>{
-                                    setAuthType("login")
-                                    setAuthOpen(true)
-                                }}>Log in</Title>
-                        </button>
-                    </div>
+                <div className="flex-1 flex justify-end gap-3">
+                    
+                    <button className="button">
+                        <Title 
+                            order={2} className="text-[var(--text-muted)]"
+                            onClick={()=>{
+                                setAuthType("register")
+                                setAuthOpen(true)
+                            }}>Sign up</Title>
+                    </button>
+                    
+                    
+                    <button className="button">
+                        <Title 
+                            order={2} className="text-[var(--text-muted)] " 
+                            onClick={()=>{
+                                setAuthType("login")
+                                setAuthOpen(true)
+                            }}>Log in</Title>
+                    </button>
+                    
                     
                     
                 </div>
@@ -61,20 +62,19 @@ function MainPage() {
                     </Text>
                 </Title>
                 
-                <div className="w-[100%] flex justify-center items-center mt-[50px] flex-col">
+                <div className="w-[100%] flex justify-center items-center mt-[50px]">
 
-                    <div className="w-[50%]">
-                        <button 
-                            className="button px-[10px] duration-200 !text-[var(--text-dark)] !bg-[var(--accent)] hover:!bg-[inherit] hover:!text-[var(--text-muted)]" 
-                            onClick={()=>{
-                                setAuthType("login")
-                                setAuthOpen(true)
-                            }}
-                        >
-
-                            <Title order={2} >Get started!</Title>
-                        </button>
-                    </div>
+                    <AccentButton 
+                        onClick={()=>{
+                            setAuthType("login")
+                            setAuthOpen(true)
+                        }}
+                        className="!w-[50%]"
+                    >
+                        <Title order={2} className="darkText">Get started!</Title>
+                    </AccentButton>
+                    
+                    
                 </div>
             
 

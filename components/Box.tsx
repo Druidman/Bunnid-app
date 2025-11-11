@@ -1,11 +1,10 @@
 import { useState } from "react"
-import { useResizeObserver } from '@mantine/hooks';
 import {Position} from "../types/position"
 import BoxModel from "../objects/BoxModel"
 
 
 
-function Box({box, children} : {box: BoxModel, children?: React.ReactNode}) {
+function Box({box} : {box: BoxModel}) {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [offset, setOffset] = useState<Position>({x:0, y:0});
     const [update, setUpdate] = useState<boolean>(false);
@@ -57,7 +56,7 @@ function Box({box, children} : {box: BoxModel, children?: React.ReactNode}) {
                     }} className="text-[var(--text-muted)] w-full h-full hover:bg-[var(--bg-light)] rounded-full">x</button>
                 </div>
                 <div className="h-full w-full flex justify-center items-center p-[20px]">
-                    {children}
+                    {box.makeContent()}
                 </div>
                 
                 

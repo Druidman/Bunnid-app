@@ -7,37 +7,37 @@ import { BunnidApiResponse } from "../../types/BunnidApiResponse"
 import React from "react";
 import ConversationSelect from "../../components/windows/ConversationSelect.tsx"
 
-export default class ConversationSelectModel extends BoxModel{
+export default class ConversationSelectModel extends BoxModel {
     user: User;
     conversations: ConversationModel[] | [] = [];
     selectedConversationIndex: number = 0;
     userSessionToken: string;
-    constructor(position: Position, user: User | null, userSessionToken: string){
+    constructor(position: Position, user: User | null, userSessionToken: string) {
         super(position)
-        if (user){
+        if (user) {
             this.user = user
         }
-        else{
+        else {
             throw new Error("Added null user to conversationSelectModel")
         }
-        
+
         this.userSessionToken = userSessionToken
     }
 
-    private makeConversationModelsOfData(data: any) : ConversationModel[] | [] {
+    private makeConversationModelsOfData(data: any): ConversationModel[] | [] {
         let conversations: ConversationModel[] = []
-        for (let conversation of data){
-           
+        for (let conversation of data) {
+
         }
         return conversations;
     }
 
-    fetchConversations(){
-        if (!this.user){
-            return 
+    fetchConversations() {
+        if (!this.user) {
+            return
         }
         fetch(
-            BUNNID_API_URL + "service/conversation/list", 
+            BUNNID_API_URL + "service/conversation/list",
             {
                 method: "POST",
                 headers: {
@@ -47,10 +47,12 @@ export default class ConversationSelectModel extends BoxModel{
                     token: this.userSessionToken
                 })
             }
-        ).then((response)=>{
+        ).then((response) => {
             return response.json()
-        }).then((data: BunnidApiResponse)=>{
-            if (!data.STATUS){
+        }).then((data: BunnidApiResponse) => {
+            console.log("?")
+            console.log(data)
+            if (!data.STATUS) {
                 console.log("Wrong status in fetching conversations")
                 console.error(data.MSG)
                 return
@@ -59,19 +61,19 @@ export default class ConversationSelectModel extends BoxModel{
             console.log(data.MSG)
             this.conversations = this.makeConversationModelsOfData(data.MSG)
 
-    
-        }).catch((reason)=>{
+
+        }).catch((reason) => {
             console.log("ERROR IN FETCHING CONVERSATIONS")
             console.error(reason)
-        
+
         })
     }
 
-    makeContent() : React.ReactNode {
-        return <ConversationSelect conversationSelectModel={this}/>
+    makeContent(): React.ReactNode {
+        return <ConversationSelect conversationSelectModel={this} />
     }
 
-    makeConversationWindow(convIndex: number) : ConversationModel{
+    makeConversationWindow(convIndex: number): ConversationModel {
         return this.conversations[convIndex]
     }
 

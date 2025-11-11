@@ -31,7 +31,7 @@ export default function WindowBox({ newBox } : {newBox?: BoxModel}){
             {
                 boxes?.map((box: BoxModel)=>(
         
-                    <Box box={box} key={box.id}/>
+                    <Box box={box} key={box.id} />
                 ))
             }
         </div >
