@@ -37,7 +37,7 @@ const App = () =>{
 
 
   const [newBox, setNewBox] = useState<BoxModel>()
-  const {UStoken, setRTStoken, RTStoken, user} = useGlobals()
+  const {UStoken, setRTStoken, RTStoken, user, spawnWindow} = useGlobals()
 
   useEffect(()=>{
     if (!UStoken) {
@@ -116,7 +116,7 @@ const App = () =>{
           returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
         }
         <div className='w-full h-full overflow-hidden'>
-          <WindowBox newBox={newBox}/>
+          <WindowBox />
         </div>
         
         <div className="box absolute left-0 bottom-1 w-full h-auto p-[5px] flex flex-row gap-5 z-1000">
@@ -125,10 +125,11 @@ const App = () =>{
               <div className='w-full flex flex-row justify-end'>
                 <button className='button !w-auto p-1'>
                   <Title order={2} className='text-[var(--info)]' onClick={()=>{
-                    setNewBox(new ConversationSelectModel(
+                    spawnWindow(new ConversationSelectModel(
                       {x: 0, y: 0},
                       user,
                       UStoken,
+                      spawnWindow
                       ))
                   }}>Chat</Title>
                 </button>

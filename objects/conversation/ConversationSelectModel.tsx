@@ -6,13 +6,16 @@ import { User } from "../../types/user"
 import { BunnidApiResponse } from "../../types/BunnidApiResponse"
 import React from "react";
 import ConversationSelect from "../../components/windows/ConversationSelect"
+import { Box } from "@mantine/core";
 
 export default class ConversationSelectModel extends BoxModel {
     user: User;
     conversations: ConversationModel[] | [] = [];
     selectedConversationIndex: number = 0;
     userSessionToken: string;
-    constructor(position: Position, user: User | null, userSessionToken: string) {
+    fetchedConversations: boolean=false;
+    spawnWindow: (box: BoxModel | null) => void = ()=>{}
+    constructor(position: Position, user: User | null, userSessionToken: string, spawnWindow: (box: BoxModel | null)=>void) {
         super(position)
         if (user) {
             this.user = user
@@ -22,6 +25,7 @@ export default class ConversationSelectModel extends BoxModel {
         }
 
         this.userSessionToken = userSessionToken
+        this.spawnWindow = spawnWindow
     }
 
     private makeConversationModelsOfData(data: any): ConversationModel[] | [] {
@@ -68,8 +72,52 @@ export default class ConversationSelectModel extends BoxModel {
         })
     }
 
-    fetchConversations() {
+    openConversation(conversationId: number) {
+        if (!conversationId){
+            return
+        }
+
+        console.log("Getting conversation")
+        fetch(
+            BUNNID_API_URL + "service/conversation/get",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    token: this.userSessionToken,
+                    conversationId: conversationId
+                })
+            }
+        ).then((response) => {
+            return response.json()
+        }).then((data: BunnidApiResponse) => {
+            if (!data.STATUS) {
+                console.log("Wrong status in getting conversation")
+                console.error(data.MSG)
+                return
+
+            }
+            console.log(data.MSG)
+            this.spawnWindow(new ConversationModel({x: 0, y: 0}, data.MSG.id, this.user, this.userSessionToken, data.MSG.title))
+            
+
+
+        }).catch((reason) => {
+            console.log("ERROR IN GETTING CONVERSATION")
+            console.error(reason)
+
+        })
+
+    }
+
+
+    fetchConversations({force=false, onFinished=()=>{}} : {force?: boolean, onFinished?: ()=>void}) {
         if (!this.user) {
+            return
+        }
+        if (this.fetchedConversations && !force){
             return
         }
         console.log("Fetching list of conversations")
@@ -106,6 +154,7 @@ export default class ConversationSelectModel extends BoxModel {
             console.error(reason)
 
         })
+        this.fetchedConversations = true
     }
 
     makeContent(): React.ReactNode {

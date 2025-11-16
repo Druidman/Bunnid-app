@@ -7,6 +7,7 @@ export default class BoxModel{
     visible: boolean = true;
     position: Position;
     onClose: () => void = () => {};
+    addNewBox: (boxToAdd: BoxModel)=>void = (boxToAdd: BoxModel) => {};
 
     private listeners: BoxListener[] = []
 
@@ -43,6 +44,7 @@ export default class BoxModel{
             this.listeners.filter((l: BoxListener)=>{l !== listener})
         }
     }
+    
     protected notify() : void{
         this.listeners.forEach((l: BoxListener) => { l() })
     }

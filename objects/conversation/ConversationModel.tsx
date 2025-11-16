@@ -12,6 +12,7 @@ export default class ConversationModel extends BoxModel{
     messages: ConversationMessage[] = []
     members: User[] = [];
     userSessionToken: string;
+    messagesFetched: boolean = false;
     
     constructor(
         position: Position, 
@@ -28,10 +29,13 @@ export default class ConversationModel extends BoxModel{
         this.conversationTitle = conversationTitle
     }
 
-    fetchMessages() : void{
+    fetchMessages({force=false, onFinished=()=>{}, onStart=()=>{}} : {force?: boolean, onFinished?: ()=>void, onStart?: ()=>void} ) : void{
         if (!this.conversationId){
             return 
         }
+        if (this.messagesFetched && !force){return}
+
+        onStart()
         fetch(
             BUNNID_API_URL + "service/conversation/getMessages", 
             {
@@ -40,7 +44,8 @@ export default class ConversationModel extends BoxModel{
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    token: this.userSessionToken
+                    token: this.userSessionToken,
+                    conversationId: this.conversationId
                 })
             }
         ).then((response)=>{
@@ -54,6 +59,8 @@ export default class ConversationModel extends BoxModel{
             }
             console.log(data.MSG)
             this.messages = data.MSG
+            setTimeout(onFinished, 500)
+         
 
     
         }).catch((reason)=>{
@@ -61,6 +68,7 @@ export default class ConversationModel extends BoxModel{
             console.error(reason)
        
         })
+        this.messagesFetched = true
 
         
     }

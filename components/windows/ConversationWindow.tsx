@@ -10,12 +10,13 @@ interface ConversationParams {
 }
 
 function Conversation({ conversation } : ConversationParams) {
-    const [loadingVisible, { toggle }] = useDisclosure(true)
+    const [loadingVisible, { toggle, open, close }] = useDisclosure(false)
 
     useEffect(()=>{
         if (!conversation) return;
-        conversation.fetchMessages() // TODO ADD SOME CALLBACK OR SMTH
-    },[conversation])
+        
+        conversation.fetchMessages({onFinished: close, onStart: open}) // TODO ADD SOME CALLBACK OR SMTH
+    },[])
     
     return (
 
@@ -24,8 +25,8 @@ function Conversation({ conversation } : ConversationParams) {
             <LoadingOverlay
                 visible={loadingVisible}
                 zIndex={1000}
-                overlayProps={{ radius: 'sm', blur: 2 }}
-                loaderProps={{ color: 'pink', type: 'bars', bg: "inherit" }}
+                overlayProps={{ radius: 'sm', blur: 10, bg: "inherit" }}
+                loaderProps={{ color: 'var(--accent)', type: 'bars', bg: "inherit" }}
             />
             <div className="w-full h-full flex flex-col justify-around align-center">
                 <div className="w-full h-[90%] bg-[var(--bg-light)] gap-2 flex flex-col justify-start p-[10px] rounded-[10px]">

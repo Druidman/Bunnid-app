@@ -4,12 +4,15 @@ import BoxModel from "../objects/BoxModel"
 import React from 'react'
 import Box from "./Box"
 
+import {useGlobals} from "../context/globalsContext"
+
 
 //Why window
 
 
-export default function WindowBox({ newBox } : {newBox?: BoxModel}){
+export default function WindowBox(){
     const [boxes, setBoxes] = useState<BoxModel[]>([])
+    const { windowToSpawn } = useGlobals()
 
     const addBox = (boxToAdd: BoxModel) => {
         setBoxes(prev => [...prev, boxToAdd])
@@ -17,12 +20,17 @@ export default function WindowBox({ newBox } : {newBox?: BoxModel}){
     const removeBox = (boxToRemove: BoxModel) => {
         setBoxes(prev => prev.filter((box: BoxModel)=>box.id !== boxToRemove.id))
     }
+    const genBox = (box: BoxModel) => {
+        box.onClose = () => removeBox(box)
+        box.addNewBox = genBox
+        addBox(box)
+    }
 
     useEffect(()=>{
-        if (!newBox) return;
-        newBox.onClose = () => removeBox(newBox)
-        addBox(newBox)
-    },[newBox])
+        if (!windowToSpawn) return;
+        genBox(windowToSpawn)
+        
+    },[windowToSpawn])
 
     
     return (
@@ -31,9 +39,9 @@ export default function WindowBox({ newBox } : {newBox?: BoxModel}){
         >
 
             {
-                boxes?.map((box: BoxModel)=>(
+                boxes?.map((box: BoxModel, index: number)=>(
         
-                    <Box box={box} key={box.id} />
+                    <Box box={box} key={index} />
                 ))
             }
         </div >
