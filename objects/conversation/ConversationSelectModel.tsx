@@ -73,9 +73,11 @@ export default class ConversationSelectModel extends BoxModel {
     }
 
     openConversation(conversationId: number) {
+        console.log("open")
         if (!conversationId){
             return
         }
+        
 
         console.log("Getting conversation")
         fetch(
@@ -145,7 +147,6 @@ export default class ConversationSelectModel extends BoxModel {
             }
             console.log(data.MSG)
             this.conversations = this.makeConversationModelsOfData(data.MSG)
-            console.log(this.conversations)
             this.notify()
 
 

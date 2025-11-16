@@ -73,7 +73,24 @@
         border: 1px solid var(--border);
         border-radius: 10px;
     }
+
+    .regularInput {
+        width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        border-radius: 20px;
+        background-color: var(--bg-light);
+        border-color: var(--border);
+        color: var(--text);
+    }
+    .regularInput:focus {
+        border-color: var(--highlight);
+        outline: none;
+    }
     
+                      
 
 }
 

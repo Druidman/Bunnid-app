@@ -1,6 +1,8 @@
 import { useState } from "react"
 import {Position} from "../types/position"
 import BoxModel from "../objects/BoxModel"
+import { ActionIcon, CloseIcon } from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
 
 
 
@@ -15,11 +17,16 @@ function Box({box} : {box: BoxModel}) {
 
     return (
             <div 
-                className={`flex justify-center items-center card h-[50%] w-[50%] no-border-highlight p-[20px]`}
+                className={`flex justify-center items-center card h-[50%] w-[50%] no-border-highlight`}
                 onMouseDown={(e)=>{
-                    if (e.target !== e.currentTarget){
+                  
+                    if (
+                        e.target instanceof HTMLButtonElement ||
+                        e.target instanceof HTMLInputElement 
+                    ){
                         return
                     }
+                
                     setIsDragging(true);
                     setOffset({
                         x: e.clientX - box.position.x,
@@ -53,11 +60,21 @@ function Box({box} : {box: BoxModel}) {
                 }}
             > 
                 <div className="w-[5%] h-[5%] absolute right-0 top-0">
-                    <button onClick={(e)=>{
-                        box.onClose()
-                        clearListener()
+                  
+                    <ActionIcon
+                        onClick={(e)=>{
+                            box.onClose()
+                            clearListener()
 
-                    }} className="text-[var(--text-muted)] w-full h-full hover:bg-[var(--bg-light)] rounded-full">x</button>
+                        }}
+                        bg="inherit"
+                        className="hover:!bg-[var(--accent)] hover:!text-[var(--text-dark)]"
+                    >
+                        <IconX></IconX>
+
+                    </ActionIcon>
+                    
+                    
                 </div>
                 <div className="h-full w-full flex justify-center items-center">
                     {box.makeContent()}

@@ -73,6 +73,11 @@ export default class ConversationModel extends BoxModel{
         
     }
 
+    addMessage(msg: string){
+        this.messages.push({conversationId: this.conversationId, userId: this.user.id, content: msg})
+        this.notify()
+    }
+
     sendMsg(msg: string) : void{
         if (!msg) return;
 

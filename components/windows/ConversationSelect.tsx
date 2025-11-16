@@ -38,7 +38,6 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
     useEffect(() => {
         
         
-        console.log("FETCH??")
         conversationSelectModel.fetchConversations({})
             
         
@@ -46,7 +45,7 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
     }, [])
 
     return (
-        <div className="w-full h-full bg-inherit flex flex-col items-center gap-2">
+        <div className="w-full h-full bg-inherit flex flex-col items-center gap-2 p-[20px]">
             <form onSubmit={conversationSearchForm.onSubmit((values) => conversationSelectModel.fetchConversations({}))} className="flex flex-row w-full gap-5">
                 <FormInput keyVal="title" placeholder="Title" form={conversationSearchForm} ></FormInput>
                 <button type="submit" className="button !h-full" >Search...</button>
@@ -56,10 +55,11 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
                 {
 
                     conversationSelectModel.conversations.map((item: ConversationModel) => {
-                        console.log(item + " added")
+                
                         return (
                             <Popover
                                 position="top"
+                                withinPortal={false}
                                 
                                 trapFocus
                                 classNames={{
@@ -73,8 +73,11 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
                                         </div>
                                     </button>
                                 </Popover.Target>
-                                <Popover.Dropdown>
-                                    <button onClick={()=>{conversationSelectModel.openConversation(item.conversationId)}} key={item.conversationId + "button"} className="button accentButton !w-full flex justify-between">
+                                <Popover.Dropdown onMouseDown={(e) => e.stopPropagation()}>
+                                    <button onClick={()=>{
+                                        console.log("XCD?")
+                                        conversationSelectModel.openConversation(item.conversationId)
+                                    }} key={item.conversationId + "button"} className="button accentButton !w-full flex justify-between">
                                         <Title order={3}>JOIN</Title>
                                         
                                     </button>
@@ -100,7 +103,7 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
 
                         </button>
                     </Popover.Target>
-                    <Popover.Dropdown>
+                    <Popover.Dropdown onMouseDown={(e) => e.stopPropagation()}>
                         <form
                             onSubmit={conversationForm.onSubmit((values) => {
                                 conversationSelectModel.makeNewConversation(values.title)
