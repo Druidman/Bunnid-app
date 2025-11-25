@@ -34,7 +34,7 @@ export default class ConversationSelectModel extends BoxModel {
     private makeConversationModelsOfData(data: any): ConversationModel[] | [] {
         let conversations: ConversationModel[] = []
         for (let conversation of data) {
-            conversations.push(new ConversationModel({x: 0, y: 0}, conversation.id, {id:0}, this.userSessionToken, conversation.title))
+            conversations.push(new ConversationModel({x: 0, y: 0}, conversation.id, {id:0}, this.userSessionToken, ()=>{}, conversation.title))
         }
         return conversations;
     }
