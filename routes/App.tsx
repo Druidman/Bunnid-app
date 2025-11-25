@@ -1,8 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
-import Box from "../components/Box"
+import { useEffect, useState } from 'react'
 import './App.css'
-import ErrorMsg from '../components/ErrorMsg'
-import ChatWindow from '../components/windows/ConversationWindow'
 import { useLocation } from 'react-router-dom'
 import { Title } from "@mantine/core"
 import { useNavigate } from 'react-router-dom'
@@ -14,12 +11,13 @@ import ReturnToHomeScreenModal from "../components/ReturnToHomeScreenModal"
 import WebSocket from '../components/WebSocket'
 import { BUNNID_API_URL } from '../globals/api'
 import { WsMessagePayload } from '../types/WsMessagePayload'
-import WsMessage, {DEFAULTWSMESSAGE} from '../objects/wsMesage'
+import WsMessage from '../objects/wsMesage'
 import BoxModel from "../objects/BoxModel"
 
 
 import { useGlobals } from '../context/globalsContext'
 import ConversationSelectModel from "../objects/conversation/ConversationSelectModel"
+import WsMessageType from '../objects/wsMessageType'
 
 
 const App = () =>{
@@ -32,12 +30,12 @@ const App = () =>{
   const [returnToHomeScreen, setReturnToHomeScreen] = useState(false)
 
   const [connectToRTS, setConnectToRTS] = useState(false)
-  const [messageToSend, setMessageToSend] = useState<WsMessage>(DEFAULTWSMESSAGE)
+  const [messageToSend, setMessageToSend] = useState<WsMessage>(new WsMessage(WsMessageType.NONE, true, ""))
   const [validAppSession, setValidAppSession] = useState(false)
 
 
   const [newBox, setNewBox] = useState<BoxModel>()
-  const {UStoken, setRTStoken, RTStoken, user, spawnWindow} = useGlobals()
+  const {UStoken, setRTStoken, RTStoken, user, spawnWindow, setWsMessageToSend} = useGlobals()
 
   useEffect(()=>{
     if (!UStoken) {
@@ -110,7 +108,7 @@ const App = () =>{
 
       <div className="mainPage">
         {
-          connectToRTS && <WebSocket onNewMessage={(msg)=>{console.log("new msg: " + msg.MSG)}} messageToSend={messageToSend}/>
+          connectToRTS && <WebSocket />
         }
         {
           returnToHomeScreen && <ReturnToHomeScreenModal returnReason="not valid user session"/>
@@ -129,7 +127,8 @@ const App = () =>{
                       {x: 0, y: 0},
                       user,
                       UStoken,
-                      spawnWindow
+                      spawnWindow,
+                      setWsMessageToSend
                       ))
                   }}>Chat</Title>
                 </button>

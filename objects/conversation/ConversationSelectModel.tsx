@@ -7,6 +7,7 @@ import { BunnidApiResponse } from "../../types/BunnidApiResponse"
 import React from "react";
 import ConversationSelect from "../../components/windows/ConversationSelect"
 import { Box } from "@mantine/core";
+import WsMessage from "../wsMesage";
 
 export default class ConversationSelectModel extends BoxModel {
     user: User;
@@ -15,7 +16,8 @@ export default class ConversationSelectModel extends BoxModel {
     userSessionToken: string;
     fetchedConversations: boolean=false;
     spawnWindow: (box: BoxModel | null) => void = ()=>{}
-    constructor(position: Position, user: User | null, userSessionToken: string, spawnWindow: (box: BoxModel | null)=>void) {
+    sendMsgOnWs: (msg: WsMessage) => void
+    constructor(position: Position, user: User | null, userSessionToken: string, spawnWindow: (box: BoxModel | null)=>void, sendMsgOnWs: (msg: WsMessage) => void) {
         super(position)
         if (user) {
             this.user = user
@@ -26,6 +28,7 @@ export default class ConversationSelectModel extends BoxModel {
 
         this.userSessionToken = userSessionToken
         this.spawnWindow = spawnWindow
+        this.sendMsgOnWs = sendMsgOnWs
     }
 
     private makeConversationModelsOfData(data: any): ConversationModel[] | [] {
@@ -102,7 +105,7 @@ export default class ConversationSelectModel extends BoxModel {
 
             }
             console.log(data.MSG)
-            this.spawnWindow(new ConversationModel({x: 0, y: 0}, data.MSG.id, this.user, this.userSessionToken, data.MSG.title))
+            this.spawnWindow(new ConversationModel({x: 0, y: 0}, data.MSG.id, this.user, this.userSessionToken, this.sendMsgOnWs, data.MSG.title ))
             
 
 

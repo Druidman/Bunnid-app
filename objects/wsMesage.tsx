@@ -24,6 +24,6 @@ class WsMessage {
     }
 }
 
-export const DEFAULTWSMESSAGE = new WsMessage("DEFAULT", false, "")
+
 
 export default WsMessage;

@@ -1,7 +1,11 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useRef } from 'react';
 import { User } from '../types/user';
 import React from 'react';
 import BoxModel from '../objects/BoxModel';
+import WsMessage from '../objects/wsMesage';
+import WsMessageType from '../objects/wsMessageType';
+import { WsEventListenerType } from "../types/WsEventListenerType"
+import { WsMessagePayload } from '../types/WsMessagePayload';
 
 
 type GlobalsContextType = {
@@ -12,7 +16,12 @@ type GlobalsContextType = {
     UStoken: string,
     setUStoken: (token: string) => void,
     windowToSpawn: BoxModel | null,
-    spawnWindow: (window: BoxModel | null)=>void
+    spawnWindow: (window: BoxModel | null)=>void,
+    wsMessageToSend: WsMessage,
+    setWsMessageToSend: (msg: WsMessage)=>void,
+    wsEventListeners: React.RefObject<{[id: string] : WsEventListenerType}>
+
+
 }
 
 export const GlobalsContext = createContext<GlobalsContextType>(
@@ -24,7 +33,11 @@ export const GlobalsContext = createContext<GlobalsContextType>(
         UStoken: "",
         setUStoken: ()=>{},
         windowToSpawn: null,
-        spawnWindow: ()=>{}
+        spawnWindow: ()=>{},
+        wsMessageToSend: new WsMessage(WsMessageType.NONE, true, ""),
+        setWsMessageToSend: ()=>{},
+        wsEventListeners: {current: {}}
+        
     }
 );
 
@@ -33,9 +46,21 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
     const [RTStoken, setRTStoken] = useState<string>("")
     const [UStoken, setUStoken] = useState<string>("")
     const [windowToSpawn, spawnWindow] = useState<BoxModel | null>(null)
+    const [wsMessageToSend, setWsMessageToSend] = useState<WsMessage>(new WsMessage(WsMessageType.NONE, true, ""))
+    const wsEventListeners = useRef<{[id: string] : WsEventListenerType}>({})
     
     return (
-        <GlobalsContext value={{user, setUser, RTStoken, setRTStoken, UStoken, setUStoken, windowToSpawn, spawnWindow}}>
+        <GlobalsContext value={
+            
+            {
+                user, setUser, 
+                RTStoken, setRTStoken, 
+                UStoken, setUStoken, 
+                windowToSpawn, spawnWindow, 
+                wsMessageToSend, setWsMessageToSend,
+                wsEventListeners
+            }
+        }>
             {children}
         </GlobalsContext>
     )

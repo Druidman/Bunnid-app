@@ -4,6 +4,8 @@ import { BUNNID_API_URL } from "../../globals/api"
 import { User } from "../../types/user";
 import { ConversationMessage } from "../../types/message";
 import { Position } from "../../types/position";
+import WsMessage from "../wsMesage";
+import WsMessageType from "../wsMessageType";
 
 export default class ConversationModel extends BoxModel{
     user: User;
@@ -13,13 +15,15 @@ export default class ConversationModel extends BoxModel{
     members: User[] = [];
     userSessionToken: string;
     messagesFetched: boolean = false;
+    sendMsgOnWs: (msg: WsMessage) => void
     
     constructor(
         position: Position, 
         conversationId: number, 
         user: User,
         userSessionToken: string,
-        conversationTitle?: string
+        sendMsgOnWs: (msg: WsMessage) => void,
+        conversationTitle?: string,
         
     ) {
         super(position)
@@ -27,6 +31,7 @@ export default class ConversationModel extends BoxModel{
         this.user = user
         this.userSessionToken = userSessionToken
         this.conversationTitle = conversationTitle
+        this.sendMsgOnWs = sendMsgOnWs
     }
 
     fetchMessages({force=false, onFinished=()=>{}, onStart=()=>{}} : {force?: boolean, onFinished?: ()=>void, onStart?: ()=>void} ) : void{
@@ -59,6 +64,8 @@ export default class ConversationModel extends BoxModel{
             }
             console.log(data.MSG)
             this.messages = data.MSG
+            this.sendMsgOnWs(new WsMessage(WsMessageType.RT_MESSAGES_IN_CONVERSATION__REQ, true, this.conversationId.toString()))
+            // TODO SOME EVENT REGISTRY?
             setTimeout(onFinished, 500)
          
 
@@ -73,8 +80,8 @@ export default class ConversationModel extends BoxModel{
         
     }
 
-    addMessage(msg: string){
-        this.messages.push({conversationId: this.conversationId, userId: this.user.id, content: msg})
+    addMessage(msg: ConversationMessage){
+        this.messages.push(msg)
         this.notify()
     }
 
