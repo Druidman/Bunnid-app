@@ -6,3 +6,8 @@ export type WsMessagePayload<T> = {
     data: T,
     requestId: number
 }
+
+
+export type WsMessageRTMessagesInConversation = {
+    conversationId: number
+}

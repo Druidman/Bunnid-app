@@ -7,6 +7,7 @@ import { Position } from "../../types/position";
 import WsMessage from "../wsMesage";
 import { WsEvent } from "../wsEvent";
 import { ApiRequestResult, ConversationGetMessagesResponse, ConversationSendMessageResoponse } from "../../types/ApiResponses";
+import { WsMessageRTMessagesInConversation } from "../../types/WsMessagePayload";
 
 export default class ConversationModel extends BoxModel{
     user: User;
@@ -65,22 +66,23 @@ export default class ConversationModel extends BoxModel{
             }
             if (data.response?.messages != undefined){
                 this.messages = data.response.messages
+                this.sendMsgOnWs(new WsMessage<WsMessageRTMessagesInConversation>({
+                    event: WsEvent.RT_MESSAGES_IN_CONVERSATION,
+                    error: "",
+                    data: {
+                        conversationId: this.conversationId
+                    },
+                    requestId: 0
+                }))
+                // TODO SOME EVENT REGISTRY?
+                setTimeout(onFinished, 500)
             }
-            
-
-            this.sendMsgOnWs(new WsMessage<string>({
-                event: WsEvent.RT_MESSAGES_IN_CONVERSATION,
-                error: "",
-                data: "",
-                requestId: 0
-            }))
-            // TODO SOME EVENT REGISTRY?
-            setTimeout(onFinished, 500)
-         
-
+            else {
+                console.info("Didn't receive proper response body in conversation get messages request")
+            }
     
         }).catch((reason)=>{
-            console.log("ERROR IN FETCHING MESSAGES")
+            console.error("Exception in conversation get messages response...")
             console.error(reason)
        
         })

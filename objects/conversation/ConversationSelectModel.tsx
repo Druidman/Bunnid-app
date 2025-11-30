@@ -16,10 +16,15 @@ export default class ConversationSelectModel extends BoxModel {
     fetchedConversations: boolean=false;
     spawnWindow: (box: BoxModel | null) => void = ()=>{}
     sendMsgOnWs: (msg: WsMessage<any>) => void
-    constructor(position: Position, user: User, userSessionToken: string, spawnWindow: (box: BoxModel | null)=>void, sendMsgOnWs: (msg: WsMessage<any>) => void) {
+    constructor(position: Position, user: User | null, userSessionToken: string, spawnWindow: (box: BoxModel | null)=>void, sendMsgOnWs: (msg: WsMessage<any>) => void) {
         super(position)
+        if (user == null){
+           throw Error("Trying to create new conversationSelectModel object with user=null. This action is forbidden") 
+        }
+        else {
+            this.user = user
+        }
         
-        this.user = user
         this.userSessionToken = userSessionToken
         this.spawnWindow = spawnWindow
         this.sendMsgOnWs = sendMsgOnWs
