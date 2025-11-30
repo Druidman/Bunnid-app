@@ -1,27 +1,28 @@
 import { WsMessagePayload } from "../types/WsMessagePayload"
+import { WsEvent } from "./wsEvent";
 
-class WsMessage {
-    type: string; 
-    status: boolean;
-    msg: string;
+class WsMessage<T> {
+    
+    error: string;
+    event: WsEvent;
+    requestId: number;
+    data: T;
+    msg: WsMessagePayload<T>
 
-    constructor(type: string, status: boolean, msg: string) {
-        this.type = type;
-        this.status = status;
-        this.msg = msg;
+    constructor(msg: WsMessagePayload<T>) {
+        this.event = msg.event
+        this.error = msg.error
+        this.requestId = msg.requestId
+        this.data = msg.data
+        this.msg = msg
+        
     }
 
     getMsgStringified() {
-        return JSON.stringify(this.getMsg());
+        return JSON.stringify(this.msg);
     }
+    
 
-    getMsg() : WsMessagePayload {
-        return {
-            TYPE: this.type,
-            STATUS: this.status,
-            MSG: this.msg
-        };
-    }
 }
 
 

@@ -5,7 +5,8 @@ import { User } from "../../types/user";
 import { ConversationMessage } from "../../types/message";
 import { Position } from "../../types/position";
 import WsMessage from "../wsMesage";
-import WsMessageType from "../wsMessageType";
+import { WsEvent } from "../wsEvent";
+import { ApiRequestResult, ConversationGetMessagesResponse, ConversationSendMessageResoponse } from "../../types/ApiResponses";
 
 export default class ConversationModel extends BoxModel{
     user: User;
@@ -15,15 +16,16 @@ export default class ConversationModel extends BoxModel{
     members: User[] = [];
     userSessionToken: string;
     messagesFetched: boolean = false;
-    sendMsgOnWs: (msg: WsMessage) => void
+    sendMsgOnWs: (msg: WsMessage<any>) => void
     
     constructor(
         position: Position, 
         conversationId: number, 
         user: User,
         userSessionToken: string,
-        sendMsgOnWs: (msg: WsMessage) => void,
-        conversationTitle?: string,
+        conversationTitle: string,
+        sendMsgOnWs: (msg: WsMessage<any>) => void = ()=>{},
+        
         
     ) {
         super(position)
@@ -46,25 +48,32 @@ export default class ConversationModel extends BoxModel{
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-User-Session-Token": this.userSessionToken
                 },
                 body: JSON.stringify({
-                    token: this.userSessionToken,
                     conversationId: this.conversationId
                 })
             }
         ).then((response)=>{
             return response.json()
-        }).then((data)=>{
-            if (!data.STATUS){
-                console.log("Wrong status in fetching messages")
-                console.error(data.MSG)
+        }).then((data: ApiRequestResult<ConversationGetMessagesResponse>)=>{
+            if (data.error){
+                console.error("Error in conversation get messages: " + data.error)
                 return
 
             }
-            console.log(data.MSG)
-            this.messages = data.MSG
-            this.sendMsgOnWs(new WsMessage(WsMessageType.RT_MESSAGES_IN_CONVERSATION__REQ, true, this.conversationId.toString()))
+            if (data.response?.messages != undefined){
+                this.messages = data.response.messages
+            }
+            
+
+            this.sendMsgOnWs(new WsMessage<string>({
+                event: WsEvent.RT_MESSAGES_IN_CONVERSATION,
+                error: "",
+                data: "",
+                requestId: 0
+            }))
             // TODO SOME EVENT REGISTRY?
             setTimeout(onFinished, 500)
          
@@ -93,29 +102,28 @@ export default class ConversationModel extends BoxModel{
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-User-Session-Token": this.userSessionToken
                 },
                 body: JSON.stringify({
-                    token: this.userSessionToken,
                     conversationId: this.conversationId,
-                    userId: this.user.id,
-                    msgContent: msg
+                    userId: Number(this.user.id),
+                    msgContent: String(msg)
                 })
             }
         ).then((response)=>{
             return response.json()
-        }).then((data)=>{
-            if (!data.STATUS){
-                console.log("Wrong status in sendingMessage")
-                console.error(data.MSG)
+        }).then((data: ApiRequestResult<ConversationSendMessageResoponse>)=>{
+            if (data.error){
+                console.error("Error in conversation send msg: " + data.error)
+                
                 return
             }
-            console.log(data.MSG)
-       
-
-    
+            if (data.response?.message_id == undefined){
+                console.info("Didn't receive proper response body for conversation send request")
+            }
         }).catch((reason)=>{
-            console.log("ERROR IN SENDINGMESSAGE")
+            console.error("Exception in conversation send msg request...")
             console.error(reason)
        
         })

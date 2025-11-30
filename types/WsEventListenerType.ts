@@ -1,7 +1,7 @@
 import { WsMessagePayload } from "./WsMessagePayload"
-import WsMessageType from "../objects/wsMessageType"
+import { WsEvent } from "../objects/wsEvent"
 
-export type WsEventListenerType = {
-    messageType: WsMessageType
-    callback: (msg: WsMessagePayload) => void
+export type WsEventListenerType<T> = {
+    messageType: WsEvent
+    callback: (msg: WsMessagePayload<T>) => void
 }

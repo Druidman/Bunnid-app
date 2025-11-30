@@ -3,7 +3,7 @@ import { User } from '../types/user';
 import React from 'react';
 import BoxModel from '../objects/BoxModel';
 import WsMessage from '../objects/wsMesage';
-import WsMessageType from '../objects/wsMessageType';
+import { WsEvent } from '../objects/wsEvent';
 import { WsEventListenerType } from "../types/WsEventListenerType"
 import { WsMessagePayload } from '../types/WsMessagePayload';
 
@@ -17,9 +17,9 @@ type GlobalsContextType = {
     setUStoken: (token: string) => void,
     windowToSpawn: BoxModel | null,
     spawnWindow: (window: BoxModel | null)=>void,
-    wsMessageToSend: WsMessage,
-    setWsMessageToSend: (msg: WsMessage)=>void,
-    wsEventListeners: React.RefObject<{[id: string] : WsEventListenerType}>
+    wsMessageToSend: WsMessage<any>,
+    setWsMessageToSend: (msg: WsMessage<any>)=>void,
+    wsEventListeners: React.RefObject<{[id: string] : WsEventListenerType<any>}>
 
 
 }
@@ -34,7 +34,7 @@ export const GlobalsContext = createContext<GlobalsContextType>(
         setUStoken: ()=>{},
         windowToSpawn: null,
         spawnWindow: ()=>{},
-        wsMessageToSend: new WsMessage(WsMessageType.NONE, true, ""),
+        wsMessageToSend: new WsMessage<string>({event: WsEvent.NONE, error: "", data: "", requestId: 0}),
         setWsMessageToSend: ()=>{},
         wsEventListeners: {current: {}}
         
@@ -46,8 +46,10 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
     const [RTStoken, setRTStoken] = useState<string>("")
     const [UStoken, setUStoken] = useState<string>("")
     const [windowToSpawn, spawnWindow] = useState<BoxModel | null>(null)
-    const [wsMessageToSend, setWsMessageToSend] = useState<WsMessage>(new WsMessage(WsMessageType.NONE, true, ""))
-    const wsEventListeners = useRef<{[id: string] : WsEventListenerType}>({})
+    const [wsMessageToSend, setWsMessageToSend] = useState<WsMessage<any>>(new WsMessage<string>({event: WsEvent.NONE, error: "", data: "", requestId: 0}))
+    const wsEventListeners = useRef<
+        Partial<Record<WsEvent, WsEventListenerType<any> > > 
+    >({})
     
     return (
         <GlobalsContext value={

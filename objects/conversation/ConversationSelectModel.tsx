@@ -3,11 +3,10 @@ import BoxModel from "../BoxModel"
 import ConversationModel from "./ConversationModel"
 import { BUNNID_API_URL } from "../../globals/api"
 import { User } from "../../types/user"
-import { BunnidApiResponse } from "../../types/BunnidApiResponse"
 import React from "react";
 import ConversationSelect from "../../components/windows/ConversationSelect"
-import { Box } from "@mantine/core";
 import WsMessage from "../wsMesage";
+import { ApiRequestResult, ConversationCreateResponse, ConversationGetResponse, ConversationListResponse, ConversationRequestModel } from "../../types/ApiResponses";
 
 export default class ConversationSelectModel extends BoxModel {
     user: User;
@@ -16,25 +15,27 @@ export default class ConversationSelectModel extends BoxModel {
     userSessionToken: string;
     fetchedConversations: boolean=false;
     spawnWindow: (box: BoxModel | null) => void = ()=>{}
-    sendMsgOnWs: (msg: WsMessage) => void
-    constructor(position: Position, user: User | null, userSessionToken: string, spawnWindow: (box: BoxModel | null)=>void, sendMsgOnWs: (msg: WsMessage) => void) {
+    sendMsgOnWs: (msg: WsMessage<any>) => void
+    constructor(position: Position, user: User, userSessionToken: string, spawnWindow: (box: BoxModel | null)=>void, sendMsgOnWs: (msg: WsMessage<any>) => void) {
         super(position)
-        if (user) {
-            this.user = user
-        }
-        else {
-            throw new Error("Added null user to conversationSelectModel")
-        }
-
+        
+        this.user = user
         this.userSessionToken = userSessionToken
         this.spawnWindow = spawnWindow
         this.sendMsgOnWs = sendMsgOnWs
     }
 
-    private makeConversationModelsOfData(data: any): ConversationModel[] | [] {
+    private makeConversationModelsOfData(data: ConversationRequestModel[]): ConversationModel[] | [] {
         let conversations: ConversationModel[] = []
         for (let conversation of data) {
-            conversations.push(new ConversationModel({x: 0, y: 0}, conversation.id, {id:0}, this.userSessionToken, ()=>{}, conversation.title))
+            conversations.push(new ConversationModel(
+                {x: 0, y: 0}, 
+                conversation.id, 
+                this.user,
+                this.userSessionToken, 
+                conversation.title,
+                this.sendMsgOnWs
+            ))
         }
         return conversations;
     }
@@ -48,69 +49,78 @@ export default class ConversationSelectModel extends BoxModel {
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-User-Session-Token": this.userSessionToken
                 },
                 body: JSON.stringify({
-                    token: this.userSessionToken,
                     conversationTitle: title
                 })
             }
         ).then((response) => {
             return response.json()
-        }).then((data: BunnidApiResponse) => {
-            if (!data.STATUS) {
-                console.log("Wrong status in adding conversation")
-                console.error(data.MSG)
+        }).then((data: ApiRequestResult<ConversationCreateResponse>) => {
+            if (data.error) {
+                console.error("Error in conversation create request: " + data.error)
                 return
 
             }
-            console.log(data.MSG)
+            if (!data.response.result){
+                console.info("Conversation not created. Smth went wrong")
+            }
          
 
 
         }).catch((reason) => {
-            console.log("ERROR IN ADDING CONVERSATION")
+            console.error("Exception in conversation create request...")
             console.error(reason)
 
         })
     }
 
     openConversation(conversationId: number) {
-        console.log("open")
+       
         if (!conversationId){
             return
         }
         
 
-        console.log("Getting conversation")
+    
         fetch(
             BUNNID_API_URL + "service/conversation/get",
             {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-User-Session-Token": this.userSessionToken
                 },
                 body: JSON.stringify({
-                    token: this.userSessionToken,
                     conversationId: conversationId
                 })
             }
         ).then((response) => {
             return response.json()
-        }).then((data: BunnidApiResponse) => {
-            if (!data.STATUS) {
-                console.log("Wrong status in getting conversation")
-                console.error(data.MSG)
+        }).then((data: ApiRequestResult<ConversationGetResponse>) => {
+            if (data.error) {
+                console.error("Error in conversation get request: " + data.error)
                 return
 
             }
-            console.log(data.MSG)
-            this.spawnWindow(new ConversationModel({x: 0, y: 0}, data.MSG.id, this.user, this.userSessionToken, this.sendMsgOnWs, data.MSG.title ))
-            
-
+            if (data.response?.conversation == undefined){ 
+                console.info("Smth went wrong with conversation get request")
+            }
+            else{
+                this.spawnWindow(new ConversationModel(
+                    {x: 0, y: 0}, 
+                    data.response.conversation.id, 
+                    this.user, 
+                    this.userSessionToken, 
+                    data.response.conversation.title,
+                    this.sendMsgOnWs, 
+                ))
+            }
 
         }).catch((reason) => {
-            console.log("ERROR IN GETTING CONVERSATION")
+            console.error("Exception in conversation get request...")
             console.error(reason)
 
         })
@@ -125,40 +135,44 @@ export default class ConversationSelectModel extends BoxModel {
         if (this.fetchedConversations && !force){
             return
         }
-        console.log("Fetching list of conversations")
+
         fetch(
             BUNNID_API_URL + "service/conversation/list",
             {
-                method: "POST",
+                method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    token: this.userSessionToken
-                })
+                    "Content-Type": "application/json",
+                    "X-User-Session-Token": this.userSessionToken
+
+                }
+               
             }
         ).then((response) => {
             return response.json()
-        }).then((data: BunnidApiResponse) => {
-            console.log("?")
-            console.log(data)
-            if (!data.STATUS) {
-                console.log("Wrong status in fetching conversations")
-                console.error(data.MSG)
+        }).then((data: ApiRequestResult<ConversationListResponse>) => {
+        
+            if (data.error) {
+                console.error("Error in conversation list request: " + data.error)
                 return
 
             }
-            console.log(data.MSG)
-            this.conversations = this.makeConversationModelsOfData(data.MSG)
-            this.notify()
+            if (data.response?.conversations != undefined){
+                this.conversations = this.makeConversationModelsOfData(data.response.conversations)
+                this.notify()
+            }
+            else {
+                console.info("Didn't receive proper response body in conversation list")
+            }
+            
 
 
         }).catch((reason) => {
-            console.log("ERROR IN FETCHING CONVERSATIONS")
+            console.error("Exception in conversation list request...")
             console.error(reason)
 
         })
-        this.fetchedConversations = true
+
+        this.fetchedConversations = true // Yes, I know fetch isn't sync this is intentional
     }
 
     makeContent(): React.ReactNode {

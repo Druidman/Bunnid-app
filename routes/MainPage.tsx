@@ -1,6 +1,5 @@
 import { Title, Text} from "@mantine/core"
 
-import { useNavigate } from "react-router-dom";
 import "./MainPage.css"
 
 import { useState } from "react";
@@ -9,7 +8,6 @@ import AccentButton from "../components/AccentButton";
 
 function MainPage() {
 
-    const navigate = useNavigate()
     const [authOpen, setAuthOpen] = useState<boolean>(false)
     const [authType, setAuthType] = useState<string>("login")
 

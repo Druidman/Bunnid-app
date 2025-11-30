@@ -6,8 +6,10 @@ import { useGlobals } from "../../context/globalsContext"
 import { ConversationMessage } from "../../types/message";
 
 import ConversationModel from "../../objects/conversation/ConversationModel"
-import WsMessageType from "../../objects/wsMessageType"
+import { WsEvent } from "../../objects/wsEvent"
 import { WsMessagePayload } from "../../types/WsMessagePayload"
+import { WsConversationMsgPayload } from "../../types/wsConversationMsgPayload"
+
 
 
 interface ConversationParams {
@@ -20,17 +22,17 @@ function Conversation({ conversation } : ConversationParams) {
 
     useEffect(()=>{
         if (!conversation) return;
-        
+        console.log("?")
         conversation.fetchMessages({onFinished: close, onStart: open})
-        wsEventListeners.current[WsMessageType.NEW_CONVERSATION_MSG__DATA] = {
-            callback: (msg: WsMessagePayload)=>{
-                if (msg.MSG.userId == conversation.user.id.toString()){
+        wsEventListeners.current[WsEvent.NEW_CONVERSATION_MSG__INFO] = {
+            callback: (msg: WsMessagePayload<WsConversationMsgPayload>)=>{
+                if (msg.data.user_id == conversation.user.id){
                     return
                 }
-                conversation.addMessage({conversationId: msg.MSG.conversationId, userId: msg.MSG.userId, content: msg.MSG.content})
-                console.log("Adding msg: " , msg.MSG.content)
+                conversation.addMessage({user_id: msg.data.user_id, content: msg.data.content})
+                console.log("Adding msg: " , msg.data.content)
             },
-            messageType: WsMessageType.NEW_CONVERSATION_MSG__DATA
+            messageType: WsEvent.NEW_CONVERSATION_MSG__INFO
         }
         
         // TODO add ws like wanting to subscribe to rt comms 
@@ -61,7 +63,7 @@ function Conversation({ conversation } : ConversationParams) {
                                 w-[100%] h-[fit-content] 
 
                                 flex
-                                ${(msg.userId == conversation.user.id ? "justify-end" : "justify-start")}
+                                ${(msg.user_id == conversation.user.id ? "justify-end" : "justify-start")}
                             
                                 `}
                             >
@@ -88,7 +90,7 @@ function Conversation({ conversation } : ConversationParams) {
                                 }
                                 let element = e.target as HTMLInputElement
                                 conversation.sendMsg(element.value)
-                                conversation.addMessage({conversationId: conversation.id, userId: conversation.user.id, content: element.value})
+                                conversation.addMessage({user_id: conversation.user.id, content: element.value})
                                 element.value = ""
                             }}></input>
                     </div>

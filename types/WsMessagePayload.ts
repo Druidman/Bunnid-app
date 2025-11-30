@@ -1,5 +1,8 @@
-export type WsMessagePayload = {
-    TYPE: string,
-    STATUS: boolean,
-    MSG: any
+import { WsEvent } from "../objects/wsEvent"
+
+export type WsMessagePayload<T> = {
+    event: WsEvent,
+    error: string,
+    data: T,
+    requestId: number
 }

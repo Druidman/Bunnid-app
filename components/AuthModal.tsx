@@ -7,6 +7,7 @@ import AccentButton from "./AccentButton"
 import { BUNNID_API_URL } from "../globals/api"
 import { FormInput, PasswordFormInput } from "./FormInputs"
 import { useGlobals } from "../context/globalsContext"
+import { ApiRequestResult, LoginResponse, RegisterResponse } from "../types/ApiResponses"
 
 
 const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: Function}) => {
@@ -73,24 +74,30 @@ const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: F
                 
             ).then((response)=>{
                 return response.json()
-            }).then((data)=>{
-                if (!data.STATUS){
-                    console.log("Wrong status in login")
-                    console.log(data.MSG)
+            }).then((data: ApiRequestResult<LoginResponse>)=>{
+                if (data.error){
+                    console.error("Error in login request: " + data.error)
                     return
     
                 }
-                console.log(data.MSG)
 
                 close()
                 onClose()
+                if (
+                    !data.response.token ||
+                    !data.response.user_id
+                ){
+                    console.info("Didn't receive full login data")
+                }
+                else{
+                    setUStoken(data.response.token)
+                    setUser({id: data.response.user_id})
 
-                setUStoken(data.MSG.token)
-                setUser({id: data.MSG.userId})
-
-                navigate("/app")
+                    navigate("/app")
+                }
+                
             }).catch((reason)=>{
-                console.log("ERROR IN LOGIN FETCH")
+                console.log("Exception in Login request: ")
                 console.log(reason)
                 close()
                 onClose()
@@ -117,20 +124,19 @@ const AuthModal = ({initModalType, onClose} : {initModalType: string, onClose: F
                 
             ).then((response)=>{
                 return response.json()
-            }).then((data)=>{
-                if (!data.STATUS){
-                    console.log("Wrong status in register")
-                    console.log(data.MSG)
-                    
-                    return
-    
+            }).then((data: ApiRequestResult<RegisterResponse>)=>{
+                if (data.error){
+                    console.error("Error in register request: " + data.error)
                 }
-                console.log(data.MSG)
+                if (!data.response.result){
+                    console.info("Register didn't succeed")
+                }
+                
                 close()
                 onClose()
             }).catch((reason)=>{
-                console.log("ERROR IN REGISTER FETCH")
-                console.log(reason)
+                console.error("Exception in register request")
+                console.error(reason)
                 close()
                 onClose()
             })
