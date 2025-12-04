@@ -8,7 +8,7 @@ import { useGlobals } from "../context/globalsContext";
 
 const WebSocket = () => {
     const wsRef = useRef<WebSocketLike>(null);
-    const {RTStoken, wsMessageToSend, wsEventListeners} = useGlobals();
+    const {RTStoken, wsMessageToSend, wsEventListeners, wsMsgResponseWaiters} = useGlobals();
 
     const { getWebSocket, sendMessage } = useWebSocket(BUNNID_API_URL_WS + RTStoken, {
         
@@ -24,12 +24,22 @@ const WebSocket = () => {
        
 
             let msg: WsMessagePayload<any> = JSON.parse(event.data)
-
-
-            if (msg.error in wsEventListeners.current){
-                wsEventListeners.current[msg.event].callback(msg)
-                return
+            console.log(msg)
+            if (msg.requestId in wsMsgResponseWaiters.current){
+                wsMsgResponseWaiters.current[msg.requestId].callback(msg)
             }
+            else {
+                if (msg.event in wsEventListeners.current){
+                    wsEventListeners.current[msg.event].callback(msg)
+                    return
+                }
+                else {
+                    console.info("Some wierd msg came in thru ws...(Invalid event and no reqId)")
+                }
+            }
+
+
+            
 
         }
        

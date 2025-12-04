@@ -26,6 +26,7 @@ function Conversation({ conversation } : ConversationParams) {
         conversation.fetchMessages({onFinished: close, onStart: open})
         wsEventListeners.current[WsEvent.NEW_CONVERSATION_MSG__INFO] = {
             callback: (msg: WsMessagePayload<WsConversationMsgPayload>)=>{
+                console.log("Event worked")
                 if (msg.data.user_id == conversation.user.id){
                     return
                 }
@@ -35,7 +36,7 @@ function Conversation({ conversation } : ConversationParams) {
             messageType: WsEvent.NEW_CONVERSATION_MSG__INFO
         }
         
-        // TODO add ws like wanting to subscribe to rt comms 
+        
     },[])
     
     return (

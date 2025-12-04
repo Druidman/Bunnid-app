@@ -19,7 +19,8 @@ type GlobalsContextType = {
     spawnWindow: (window: BoxModel | null)=>void,
     wsMessageToSend: WsMessage<any>,
     setWsMessageToSend: (msg: WsMessage<any>)=>void,
-    wsEventListeners: React.RefObject<{[id: string] : WsEventListenerType<any>}>
+    wsEventListeners: React.RefObject<{[id: string] : WsEventListenerType<any>}>,
+    wsMsgResponseWaiters: React.RefObject<{[key: number] : {callback: (response: WsMessagePayload<any>)=>void}}>
 
 
 }
@@ -36,7 +37,8 @@ export const GlobalsContext = createContext<GlobalsContextType>(
         spawnWindow: ()=>{},
         wsMessageToSend: new WsMessage<string>({event: WsEvent.NONE, error: "", data: "", requestId: 0}),
         setWsMessageToSend: ()=>{},
-        wsEventListeners: {current: {}}
+        wsEventListeners: {current: {}},
+        wsMsgResponseWaiters: {current: {}},
         
     }
 );
@@ -50,6 +52,10 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
     const wsEventListeners = useRef<
         Partial<Record<WsEvent, WsEventListenerType<any> > > 
     >({})
+
+    const wsMsgResponseWaiters = useRef<
+        {[key: number]: {callback: (response: WsMessagePayload<any>)=>{}}}
+    >({})
     
     return (
         <GlobalsContext value={
@@ -60,7 +66,8 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
                 UStoken, setUStoken, 
                 windowToSpawn, spawnWindow, 
                 wsMessageToSend, setWsMessageToSend,
-                wsEventListeners
+                wsEventListeners,
+                wsMsgResponseWaiters
             }
         }>
             {children}
