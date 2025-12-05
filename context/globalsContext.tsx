@@ -6,7 +6,7 @@ import WsMessage from '../objects/wsMesage';
 import { WsEvent } from '../objects/wsEvent';
 import { WsEventListenerType } from "../types/WsEventListenerType"
 import { WsMessagePayload } from '../types/WsMessagePayload';
-
+import {EventPool} from "../objects/eventPool/EventPool"
 
 type GlobalsContextType = {
     user: User | null, 
@@ -19,7 +19,7 @@ type GlobalsContextType = {
     spawnWindow: (window: BoxModel | null)=>void,
     wsMessageToSend: WsMessage<any>,
     setWsMessageToSend: (msg: WsMessage<any>)=>void,
-    wsEventListeners: React.RefObject<{[id: string] : WsEventListenerType<any>}>,
+    eventPool: React.RefObject<EventPool | null>,
     wsMsgResponseWaiters: React.RefObject<{[key: number] : {callback: (response: WsMessagePayload<any>)=>void}}>
 
 
@@ -37,7 +37,7 @@ export const GlobalsContext = createContext<GlobalsContextType>(
         spawnWindow: ()=>{},
         wsMessageToSend: new WsMessage<string>({event: WsEvent.NONE, error: "", data: "", requestId: 0}),
         setWsMessageToSend: ()=>{},
-        wsEventListeners: {current: {}},
+        eventPool: {current: null},
         wsMsgResponseWaiters: {current: {}},
         
     }
@@ -49,9 +49,7 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
     const [UStoken, setUStoken] = useState<string>("")
     const [windowToSpawn, spawnWindow] = useState<BoxModel | null>(null)
     const [wsMessageToSend, setWsMessageToSend] = useState<WsMessage<any>>(new WsMessage<string>({event: WsEvent.NONE, error: "", data: "", requestId: 0}))
-    const wsEventListeners = useRef<
-        Partial<Record<WsEvent, WsEventListenerType<any> > > 
-    >({})
+    const eventPool = useRef<EventPool | null>(new EventPool())
 
     const wsMsgResponseWaiters = useRef<
         {[key: number]: {callback: (response: WsMessagePayload<any>)=>{}}}
@@ -66,7 +64,7 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
                 UStoken, setUStoken, 
                 windowToSpawn, spawnWindow, 
                 wsMessageToSend, setWsMessageToSend,
-                wsEventListeners,
+                eventPool,
                 wsMsgResponseWaiters
             }
         }>

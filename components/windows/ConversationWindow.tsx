@@ -9,6 +9,9 @@ import ConversationModel from "../../objects/conversation/ConversationModel"
 import { WsEvent } from "../../objects/wsEvent"
 import { WsMessagePayload } from "../../types/WsMessagePayload"
 import { WsConversationMsgPayload } from "../../types/wsConversationMsgPayload"
+import { EventType } from "../../objects/eventPool/EventType"
+import { ConversationMsgEventListener } from "../../objects/eventPool/events/conversationMsg/Listener"
+import { ConversationMsgEventData } from "../../objects/eventPool/events/conversationMsg/Data"
 
 
 
@@ -18,24 +21,13 @@ interface ConversationParams {
 
 function Conversation({ conversation } : ConversationParams) {
     const [loadingVisible, { toggle, open, close }] = useDisclosure(false)
-    const { wsEventListeners } = useGlobals()
+    const { eventPool } = useGlobals()
 
     useEffect(()=>{
         if (!conversation) return;
         console.log("?")
         conversation.fetchMessages({onFinished: close, onStart: open})
-        wsEventListeners.current[WsEvent.NEW_CONVERSATION_MSG__INFO] = {
-            callback: (msg: WsMessagePayload<WsConversationMsgPayload>)=>{
-                console.log("Event worked")
-                if (msg.data.user_id == conversation.user.id){
-                    return
-                }
-                conversation.addMessage({user_id: msg.data.user_id, content: msg.data.content})
-                console.log("Adding msg: " , msg.data.content)
-            },
-            messageType: WsEvent.NEW_CONVERSATION_MSG__INFO
-        }
-        
+        conversation.registerMsgListenerToEventPool(eventPool)
         
     },[])
     

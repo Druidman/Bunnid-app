@@ -8,6 +8,11 @@ import WsMessage from "../wsMesage";
 import { WsEvent } from "../wsEvent";
 import { ApiRequestResult, ConversationGetMessagesResponse, ConversationSendMessageResoponse } from "../../types/ApiResponses";
 import { WsMessageRTMessagesInConversation } from "../../types/WsMessagePayload";
+import { EventPool } from "../eventPool/EventPool";
+import { RefObject } from "react";
+import { ConversationMsgEventListener } from "../eventPool/events/conversationMsg/Listener";
+import { EventType } from "../eventPool/EventType";
+import { ConversationMsgEventData } from "../eventPool/events/conversationMsg/Data";
 
 export default class ConversationModel extends BoxModel{
     user: User;
@@ -16,8 +21,11 @@ export default class ConversationModel extends BoxModel{
     messages: ConversationMessage[] = []
     members: User[] = [];
     userSessionToken: string;
-    messagesFetched: boolean = false;
     sendMsgOnWs: (msg: WsMessage<any>) => void
+
+
+    private messagesFetched: boolean = false;
+    private listenerAssigned: boolean = false;
     
     constructor(
         position: Position, 
@@ -36,7 +44,23 @@ export default class ConversationModel extends BoxModel{
         this.conversationTitle = conversationTitle
         this.sendMsgOnWs = sendMsgOnWs
     }
-
+    registerMsgListenerToEventPool(eventPool: RefObject<EventPool | null>){
+        if (this.listenerAssigned){
+            return
+        }
+        eventPool.current?.events[EventType.NEW_CONVERSATION_MSG]?.add_listener(new ConversationMsgEventListener(
+            (data: ConversationMsgEventData)=>{
+                console.log("Event worked")
+                if (data.user_id == this.user.id){
+                    return
+                }
+                this.addMessage({user_id: data.user_id, content: data.content})
+                console.log("Adding msg: " , data.content)
+            },
+            this.conversationId
+        ))
+        this.listenerAssigned = true
+    }
     fetchMessages({force=false, onFinished=()=>{}, onStart=()=>{}} : {force?: boolean, onFinished?: ()=>void, onStart?: ()=>void} ) : void{
         if (!this.conversationId){
             return 
