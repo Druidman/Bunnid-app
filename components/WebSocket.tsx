@@ -9,9 +9,9 @@ import { convertWsEventToEventType, EventType } from "../objects/eventPool/Event
 
 const WebSocket = () => {
     const wsRef = useRef<WebSocketLike>(null);
-    const {RTStoken, wsMessageToSend, eventPool, wsMsgResponseWaiters} = useGlobals();
+    const {UStoken, wsMessageToSend, eventPool, wsMsgResponseWaiters} = useGlobals();
 
-    const { getWebSocket, sendMessage } = useWebSocket(BUNNID_API_URL_WS + RTStoken, {
+    const { getWebSocket, sendMessage } = useWebSocket(BUNNID_API_URL_WS + UStoken, {
         
         onOpen: () => {
             console.log('WebSocket connection established.');

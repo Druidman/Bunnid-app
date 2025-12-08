@@ -5,18 +5,27 @@ import "./MainPage.css"
 import { useState } from "react";
 import AuthModal from "../components/AuthModal";
 import AccentButton from "../components/AccentButton";
+import { AuthModel } from "../objects/auth/AuthModel";
+import { useGlobals } from "../context/globalsContext";
 
 function MainPage() {
 
     const [authOpen, setAuthOpen] = useState<boolean>(false)
     const [authType, setAuthType] = useState<string>("login")
+    const {setUser, setUStoken} = useGlobals()
 
 
     return (
         <div className="w-[100vw] h-[100vh] bg-[var(--bg-dark)] flex justify-center items-center flex-col overflow-scroll ">
             {
                 authOpen && 
-                <AuthModal initModalType={authType} onClose={()=>{setAuthOpen(false)}}/>
+                <AuthModal authModel={
+                    new AuthModel(
+                        ()=>{setAuthOpen(false)}, 
+                        setUser,
+                        setUStoken)
+                    } 
+                />
             }
             <div className="absolute top-1 card flex flex-row justify-start items-center p-[10px] w-[90%] no-border-highlight">
                 <div className="w-[fit-content] h-full px-[10px] !pr-[20px]">

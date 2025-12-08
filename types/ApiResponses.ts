@@ -5,13 +5,12 @@ export type ApiRequestResult<T> = {
     error: string
 }
 
-
-export type SessionGetRtsResponse = {
-    token?: string
+export type UserSessionTokenResponse = {
+    session_token?: string,
+    result?: boolean
 }
 
 export type LoginResponse = {
-    token?: string,
     user_id?: number
 }
 export type RegisterResponse = {
@@ -40,6 +39,6 @@ export type ConversationGetMessagesResponse = {
     messages?: ConversationMessage[] 
 }
 
-export type ConversationSendMessageResoponse = {
+export type ConversationSendMessageResponse = {
     message_id?: number
 }

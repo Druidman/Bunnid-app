@@ -6,7 +6,7 @@ import { ConversationMessage } from "../../types/message";
 import { Position } from "../../types/position";
 import WsMessage from "../wsMesage";
 import { WsEvent } from "../wsEvent";
-import { ApiRequestResult, ConversationGetMessagesResponse, ConversationSendMessageResoponse } from "../../types/ApiResponses";
+import { ApiRequestResult, ConversationGetMessagesResponse, ConversationSendMessageResponse } from "../../types/ApiResponses";
 import { WsMessageRTMessagesInConversation } from "../../types/WsMessagePayload";
 import { EventPool } from "../eventPool/EventPool";
 import { RefObject } from "react";
@@ -74,7 +74,7 @@ export default class ConversationModel extends BoxModel{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-User-Session-Token": this.userSessionToken
+                    "Authorization": `Bearer ${this.userSessionToken}`
                 },
                 body: JSON.stringify({
                     conversationId: this.conversationId
@@ -129,7 +129,7 @@ export default class ConversationModel extends BoxModel{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-User-Session-Token": this.userSessionToken
+                    "Authorization": `Bearer ${this.userSessionToken}`
                 },
                 body: JSON.stringify({
                     conversationId: this.conversationId,
@@ -139,7 +139,7 @@ export default class ConversationModel extends BoxModel{
             }
         ).then((response)=>{
             return response.json()
-        }).then((data: ApiRequestResult<ConversationSendMessageResoponse>)=>{
+        }).then((data: ApiRequestResult<ConversationSendMessageResponse>)=>{
             if (data.error){
                 console.error("Error in conversation send msg: " + data.error)
                 

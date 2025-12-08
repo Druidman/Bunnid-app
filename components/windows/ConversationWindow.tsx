@@ -1,17 +1,11 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useDisclosure } from "@mantine/hooks"
 import { ActionIcon, LoadingOverlay, Title } from "@mantine/core"
 import { IconSettings } from "@tabler/icons-react"
 import { useGlobals } from "../../context/globalsContext"
-import { ConversationMessage } from "../../types/message";
+
 
 import ConversationModel from "../../objects/conversation/ConversationModel"
-import { WsEvent } from "../../objects/wsEvent"
-import { WsMessagePayload } from "../../types/WsMessagePayload"
-import { WsConversationMsgPayload } from "../../types/wsConversationMsgPayload"
-import { EventType } from "../../objects/eventPool/EventType"
-import { ConversationMsgEventListener } from "../../objects/eventPool/events/conversationMsg/Listener"
-import { ConversationMsgEventData } from "../../objects/eventPool/events/conversationMsg/Data"
 
 
 

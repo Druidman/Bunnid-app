@@ -7,12 +7,10 @@ import WindowBox from "../components/windowBox"
 import ReturnToHomeScreenModal from "../components/ReturnToHomeScreenModal"
 
 import WebSocket from '../components/WebSocket'
-import { BUNNID_API_URL } from '../globals/api'
 
 
 import { useGlobals } from '../context/globalsContext'
 import ConversationSelectModel from "../objects/conversation/ConversationSelectModel"
-import { ApiRequestResult, SessionGetRtsResponse } from "../types/ApiResponses"
 
 const App = () =>{
   const navigate = useNavigate()
@@ -25,7 +23,7 @@ const App = () =>{
   const [connectToRTS, setConnectToRTS] = useState(false)
   const [validAppSession, setValidAppSession] = useState(false)
 
-  const {UStoken, setRTStoken, RTStoken, user, spawnWindow, setWsMessageToSend} = useGlobals()
+  const {UStoken, user, spawnWindow, setWsMessageToSend} = useGlobals()
 
   useEffect(()=>{
     if (!UStoken) {
@@ -40,45 +38,9 @@ const App = () =>{
 
   useEffect(()=>{
     if (!validAppSession) return;
-    fetch(
-        BUNNID_API_URL + "service/session/getRTS", 
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "X-User-Session-Token": UStoken
-            }
-        }
-        
-    ).then((response)=>{
-     
-        return response.json()
-    }).then((data: ApiRequestResult<SessionGetRtsResponse>)=>{
-
-        if (data.error){
-          console.error("Error in fetching rts: " + data.error)
-          return
-        }
-        if (data.response.token){
-          setRTStoken(data.response.token)
-        }
-        else {
-          console.info("No token found in rts call")
-        }
-    }).catch((reason)=>{
-        console.log("Exception int GetRTS call")
-        console.log(reason)
-        
-    })
-
-    
-  },[validAppSession])
-
-  useEffect(()=>{
-    if (!RTStoken) return;
     setConnectToRTS(true)
     console.log("Connecting to RTS")
-  },[RTStoken])
+  },[validAppSession])
   
   useEffect(()=>{
     if (!logout) return;

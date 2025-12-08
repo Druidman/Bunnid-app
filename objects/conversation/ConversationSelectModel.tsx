@@ -55,7 +55,7 @@ export default class ConversationSelectModel extends BoxModel {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-User-Session-Token": this.userSessionToken
+                    "Authorization": `Bearer ${this.userSessionToken}`
                 },
                 body: JSON.stringify({
                     conversationTitle: title
@@ -96,7 +96,7 @@ export default class ConversationSelectModel extends BoxModel {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-User-Session-Token": this.userSessionToken
+                    "Authorization": `Bearer ${this.userSessionToken}`
                 },
                 body: JSON.stringify({
                     conversationId: conversationId
@@ -147,8 +147,7 @@ export default class ConversationSelectModel extends BoxModel {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-User-Session-Token": this.userSessionToken
-
+                    "Authorization": `Bearer ${this.userSessionToken}`
                 }
                
             }

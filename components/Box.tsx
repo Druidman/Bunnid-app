@@ -1,7 +1,7 @@
 import { useState } from "react"
 import {Position} from "../types/position"
 import BoxModel from "../objects/BoxModel"
-import { ActionIcon, CloseIcon } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 
 
