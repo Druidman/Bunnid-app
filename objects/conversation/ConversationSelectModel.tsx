@@ -63,7 +63,7 @@ export default class ConversationSelectModel extends BoxModel {
             }
         ).then((response) => {
             return response.json()
-        }).then((data: ApiRequestResult<ConversationCreateResponse>) => {
+        }).then(async (data: ApiRequestResult<ConversationCreateResponse>) => {
             if (data.error) {
                 console.error("Error in conversation create request: " + data.error)
                 return
@@ -72,6 +72,7 @@ export default class ConversationSelectModel extends BoxModel {
             if (!data.response.result){
                 console.info("Conversation not created. Smth went wrong")
             }
+            await this.fetchConversations({force: true})
          
 
 

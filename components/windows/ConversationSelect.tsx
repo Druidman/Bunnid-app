@@ -46,7 +46,10 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
 
     return (
         <div className="w-full h-full bg-inherit flex flex-col items-center gap-2 p-[20px]">
-            <form onSubmit={conversationSearchForm.onSubmit((values) => conversationSelectModel.fetchConversations({}))} className="flex flex-row w-full gap-5">
+            <form onSubmit={conversationSearchForm.onSubmit((values) => conversationSelectModel.fetchConversations(
+                    {
+                        force: true, 
+                    }))} className="flex flex-row w-full gap-5">
                 <FormInput keyVal="title" placeholder="Title" form={conversationSearchForm} ></FormInput>
                 <button type="submit" className="button !h-full" >Search...</button>
             </form>
