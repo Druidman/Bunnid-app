@@ -1,11 +1,12 @@
-import { useEffect } from "react"
-import { useDisclosure } from "@mantine/hooks"
-import { ActionIcon, LoadingOverlay, Title } from "@mantine/core"
+import { useEffect, useState } from "react"
+import { ActionIcon, Title } from "@mantine/core"
 import { IconSettings } from "@tabler/icons-react"
 import { useGlobals } from "../../context/globalsContext"
+import { Loading } from "../LoadingOverlay"
 
 
 import ConversationModel from "../../objects/conversation/ConversationModel"
+import { useDisclosure } from "@mantine/hooks"
 
 
 
@@ -14,7 +15,8 @@ interface ConversationParams {
 }
 
 function Conversation({ conversation } : ConversationParams) {
-    const [loadingVisible, { toggle, open, close }] = useDisclosure(false)
+    const [loadingVisible, { open, close}] = useDisclosure(true)
+
     const { eventPool } = useGlobals()
 
     useEffect(()=>{
@@ -29,12 +31,9 @@ function Conversation({ conversation } : ConversationParams) {
 
         <div className="w-full h-full flex flex-col justify-around align-center">
             
-            <LoadingOverlay
-                visible={loadingVisible}
-                zIndex={1000}
-                overlayProps={{ radius: 'sm', blur: 10, bg: "inherit" }}
-                loaderProps={{ color: 'var(--accent)', type: 'bars', bg: "inherit" }}
-            />
+            <Loading loadingVisible={loadingVisible}/>
+
+            
             <div className="w-full h-full flex flex-col justify-around align-center">
                 <div className="px-2 flex items-center gap-2">
                     <Title order={1} className="text-[var(--accent)]">{conversation.conversationTitle}</Title>

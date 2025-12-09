@@ -26,9 +26,9 @@ type registerFormType = UseFormReturnType<
     (values: registerValues) => registerValues
 >
 export class AuthModel{
-    onClose: ()=>void = ()=>{};
     setUser: (nUser: User)=>void = ()=>{};
     setSessionToken: (token: string) => void = ()=>{};
+    onClose: () => void;
 
     modalType: string = "login"
     
@@ -38,9 +38,10 @@ export class AuthModel{
         this.setUser = setUser
         this.setSessionToken = setSessionToken
     }
-    async login(loginForm: loginFormType, onSuccess: ()=>void) {
+    async login(loginForm: loginFormType, lifetime?: { onSuccess?: ()=>void, onStart?: ()=>void }) {
         let loginData = loginForm.getValues()
         console.log("dfs")
+        lifetime?.onStart?.()
         fetch(
             BUNNID_API_URL + "auth/login", 
             {
@@ -63,8 +64,6 @@ export class AuthModel{
 
             }
 
-        
-            this.onClose()
             if (
                 !data.response.user_id
             ){
@@ -72,23 +71,22 @@ export class AuthModel{
             }
             else{
                 this.setUser({id: data.response.user_id})
-                await this.getUserSessionToken()
-                onSuccess()
+                await this.getUserSessionToken({onSuccess: lifetime?.onSuccess})
             }
+            
             
         }).catch((reason)=>{
             console.log("Exception in Login request: ")
             console.log(reason)
-
-            this.onClose()
         })
         
 
         
     }
 
-    async register(registerForm: registerFormType){
+    async register(registerForm: registerFormType, lifetime?: { onSuccess?: ()=>void, onStart?: ()=>void }){
         let registerData = registerForm.getValues()
+        lifetime?.onStart?.()
         fetch(
             BUNNID_API_URL + "auth/register", 
             {
@@ -113,20 +111,22 @@ export class AuthModel{
                 console.info("Register didn't succeed")
             }
             
-         
-            this.onClose()
+            lifetime?.onSuccess?.()
+
+            
         }).catch((reason)=>{
             console.error("Exception in register request")
             console.error(reason)
         
-            this.onClose()
+
         })
         
         
         
     }
 
-    async getUserSessionToken(){
+    async getUserSessionToken(lifetime?: { onSuccess?: ()=>void, onStart?: ()=>void }){
+        lifetime?.onStart?.()
         await fetch(
             BUNNID_API_URL + "auth/get_session", 
             {
@@ -151,7 +151,9 @@ export class AuthModel{
                 console.info("Didn't receive token " + data.response.session_token)
             }
             else{
+                
                 this.setSessionToken(data.response.session_token)
+                lifetime?.onSuccess?.()
             }
             
         }).catch((reason)=>{

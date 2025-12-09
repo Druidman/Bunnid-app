@@ -7,11 +7,14 @@ import AuthModal from "../components/AuthModal";
 import AccentButton from "../components/AccentButton";
 import { AuthModel } from "../objects/auth/AuthModel";
 import { useGlobals } from "../context/globalsContext";
+import { Loading } from "../components/LoadingOverlay";
+import { useDisclosure } from "@mantine/hooks";
 
 function MainPage() {
 
     const [authOpen, setAuthOpen] = useState<boolean>(false)
     const [authType, setAuthType] = useState<string>("login")
+
     const {setUser, setUStoken} = useGlobals()
 
 
@@ -21,9 +24,13 @@ function MainPage() {
                 authOpen && 
                 <AuthModal authModel={
                     new AuthModel(
-                        ()=>{setAuthOpen(false)}, 
+                        ()=>{
+                            setAuthOpen(false)
+                            close()
+                        }, 
                         setUser,
-                        setUStoken)
+                        setUStoken
+                    )
                     } 
                 />
             }

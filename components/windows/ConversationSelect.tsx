@@ -67,7 +67,11 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
                                 trapFocus
                                 classNames={{
                                     dropdown: "!border-none !rounded-[20px] !p-0 !m-0"
-                                }}>
+                                }}
+                                key={item.conversationId}
+                            >
+                                
+                                
                                 
                                 <Popover.Target>
                                     <button key={item.conversationId} className="button w-full flex justify-between">
@@ -81,7 +85,7 @@ export default function ConversationSelect({ conversationSelectModel }: { conver
                                     <button onClick={()=>{
                                         console.log("XCD?")
                                         conversationSelectModel.openConversation(item.conversationId)
-                                    }} key={String(item.conversationId) + "button"} className="button accentButton !w-full flex justify-between">
+                                    }} className="button accentButton !w-full flex justify-between">
                                         <Title order={3}>JOIN</Title>
                                         
                                     </button>

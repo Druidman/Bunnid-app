@@ -7,6 +7,7 @@ import AccentButton from "./AccentButton"
 
 import { FormInput, PasswordFormInput } from "./FormInputs"
 import { AuthModel } from "../objects/auth/AuthModel"
+import { Loading } from "./LoadingOverlay"
 
 
 
@@ -15,6 +16,8 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
     const [startAuth, setStartAuth] = useState(false)
     const navigate = useNavigate()
     const [renderTrigger, triggerRender] = useState(true)
+
+    const [loadingOpened, loading] = useDisclosure(false)
 
     const RegisterForm = useForm({
         mode: 'uncontrolled',
@@ -49,14 +52,21 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
 
         const login = async () =>{
             
-            await authModel.login(LoginForm, ()=>navigate("/app") )
-            close()
+            await authModel.login(LoginForm, {onStart: loading.open, onSuccess: ()=>{
+                navigate("/app")
+                loading.close()
+                close()
+            }})
+            
             
         }
 
         const register = async () =>{
-            authModel.register(RegisterForm)
-            close()
+            await authModel.register(RegisterForm, {onStart: loading.open, onSuccess: ()=>{
+                loading.close()
+                close()
+            }})
+            
         }
 
         if (authModel.modalType == "login"){
@@ -79,7 +89,7 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
         <Modal 
             opened={opened} 
             onClose={()=>{
-                close()
+                loading.close()
                 authModel.onClose()
             }} 
             title={
@@ -91,6 +101,7 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
             }
             centered
         >
+            <Loading loadingVisible={loadingOpened}/>
             <div className="bg-[var(--bg)] w-full h-[fitcontent]  flex  gap-5 flex-col justify-start items-center">
                 <div className="w-[100%] h-auto  flex gap-5 flex-col">
                     {authModel.modalType == "login" && 

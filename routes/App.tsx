@@ -11,12 +11,15 @@ import WebSocket from '../components/WebSocket'
 
 import { useGlobals } from '../context/globalsContext'
 import ConversationSelectModel from "../objects/conversation/ConversationSelectModel"
+import { useDisclosure } from '@mantine/hooks'
+import { Loading } from '../components/LoadingOverlay'
 
 const App = () =>{
   const navigate = useNavigate()
 
   const [logout, setLogout] = useState(false)
 
+  
   
   const [returnToHomeScreen, setReturnToHomeScreen] = useState(false)
 
@@ -28,11 +31,13 @@ const App = () =>{
   useEffect(()=>{
     if (!UStoken) {
       setReturnToHomeScreen(true);
+      
       return
     }
     
     // should get RTS and make websocket to connect
     setValidAppSession(true)
+   
 
   },[UStoken])
 
@@ -54,6 +59,7 @@ const App = () =>{
     
 
       <div className="w-[100vw] h-[100vh] flex justify-center items-center flex-column bg-[var(--bg-dark)] overflow-hidden">
+
         {
           connectToRTS && <WebSocket />
         }
