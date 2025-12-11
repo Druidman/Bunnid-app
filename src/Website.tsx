@@ -17,8 +17,8 @@ function Website() {
       <GlobalsContextProvider>
         <BrowserRouter>
           <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/app" element={<App />} />
+              <Route path="/app" element={<MainPage />} />
+              <Route path="/app/app" element={<App />} />
       
           </Routes>
         </BrowserRouter>

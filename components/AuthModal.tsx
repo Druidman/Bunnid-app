@@ -53,9 +53,10 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
         const login = async () =>{
             
             await authModel.login(LoginForm, {onStart: loading.open, onSuccess: ()=>{
-                navigate("/app")
-                loading.close()
+                navigate("/app/app")
                 close()
+                loading.close()
+                authModel.onClose()
             }})
             
             
@@ -63,8 +64,9 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
 
         const register = async () =>{
             await authModel.register(RegisterForm, {onStart: loading.open, onSuccess: ()=>{
-                loading.close()
                 close()
+                loading.close()
+                authModel.onClose()
             }})
             
         }
@@ -89,6 +91,7 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
         <Modal 
             opened={opened} 
             onClose={()=>{
+                close()
                 loading.close()
                 authModel.onClose()
             }} 

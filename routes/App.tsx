@@ -50,7 +50,7 @@ const App = () =>{
   useEffect(()=>{
     if (!logout) return;
 
-    navigate("/")
+    navigate("/app")
     // TODO remove tokenS from db
     
   },[logout])

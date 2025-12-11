@@ -26,7 +26,6 @@ function MainPage() {
                     new AuthModel(
                         ()=>{
                             setAuthOpen(false)
-                            close()
                         }, 
                         setUser,
                         setUStoken
