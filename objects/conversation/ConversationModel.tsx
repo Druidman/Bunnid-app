@@ -51,6 +51,9 @@ export default class ConversationModel extends BoxModel{
         eventPool.current?.events[EventType.NEW_CONVERSATION_MSG]?.add_listener(new ConversationMsgEventListener(
             (data: ConversationMsgEventData)=>{
                 console.log("Event worked")
+                if (data.conversation_id != this.conversationId){
+                    console.info("Idk not my problem")
+                }
                 if (data.user_id == this.user.id){
                     return
                 }
