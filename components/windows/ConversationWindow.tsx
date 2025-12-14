@@ -75,9 +75,11 @@ function Conversation({ conversation } : ConversationParams) {
                                     return
                                 }
                                 let element = e.target as HTMLInputElement
-                                conversation.sendMsg(element.value)
-                                conversation.addMessage({user_id: conversation.user.id, content: element.value})
-                                element.value = ""
+                                const onSuccessCall = () => {
+                                    conversation.addMessage({user_id: conversation.user.id, content: element.value})
+                                    element.value = ""
+                                }
+                                conversation.sendMsg(element.value, onSuccessCall)
                             }}></input>
                     </div>
                 </div>

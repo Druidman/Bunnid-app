@@ -123,8 +123,11 @@ export default class ConversationModel extends BoxModel{
         this.notify()
     }
 
-    sendMsg(msg: string) : void{
+    sendMsg(msg: string, onSuccess?: ()=>void) : void{
         if (!msg) return;
+        if ( msg.length > 300 ){
+            return
+        }
 
         fetch(
             BUNNID_API_URL + "service/conversation/send", 
@@ -151,6 +154,7 @@ export default class ConversationModel extends BoxModel{
             if (data.response?.message_id == undefined){
                 console.info("Didn't receive proper response body for conversation send request")
             }
+            onSuccess?.()
         }).catch((reason)=>{
             console.error("Exception in conversation send msg request...")
             console.error(reason)
