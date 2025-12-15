@@ -25,6 +25,7 @@ type registerFormType = UseFormReturnType<
     registerValues,
     (values: registerValues) => registerValues
 >
+type functionLifetimeCallbacks = { onSuccess?: ()=>void, onStart?: ()=>void, onEnd?: ()=>void, onError?: ()=>void }
 export class AuthModel{
     setUser: (nUser: User)=>void = ()=>{};
     setSessionToken: (token: string) => void = ()=>{};
@@ -38,7 +39,7 @@ export class AuthModel{
         this.setUser = setUser
         this.setSessionToken = setSessionToken
     }
-    async login(loginForm: loginFormType, lifetime?: { onSuccess?: ()=>void, onStart?: ()=>void }) {
+    async login(loginForm: loginFormType, lifetime?: functionLifetimeCallbacks) {
         let loginData = loginForm.getValues()
         console.log("dfs")
         lifetime?.onStart?.()
@@ -56,12 +57,13 @@ export class AuthModel{
             }
             
         ).then((response)=>{
+            if (!response.ok){
+                throw new Error("Api call not successfull with status code: " + response.status)
+            }
             return response.json()
         }).then(async (data: ApiRequestResult<LoginResponse>)=>{
             if (data.error){
-                console.error("Error in login request: " + data.error)
-                return
-
+                throw new Error("Error in login request: " + data.error)
             }
 
             if (
@@ -73,18 +75,19 @@ export class AuthModel{
                 this.setUser({id: data.response.user_id})
                 await this.getUserSessionToken({onSuccess: lifetime?.onSuccess})
             }
-            
-            
         }).catch((reason)=>{
             console.log("Exception in Login request: ")
             console.log(reason)
+            lifetime?.onError?.()
+        }).then(()=>{
+            lifetime?.onEnd?.()
         })
         
 
         
     }
 
-    async register(registerForm: registerFormType, lifetime?: { onSuccess?: ()=>void, onStart?: ()=>void }){
+    async register(registerForm: registerFormType, lifetime?: functionLifetimeCallbacks){
         let registerData = registerForm.getValues()
         lifetime?.onStart?.()
         fetch(
@@ -102,13 +105,17 @@ export class AuthModel{
             }
             
         ).then((response)=>{
+            if (!response.ok){
+                throw new Error("Api call not successfull with status code: " + response.status)
+            }
             return response.json()
         }).then((data: ApiRequestResult<RegisterResponse>)=>{
             if (data.error){
-                console.error("Error in register request: " + data.error)
+                throw new Error("Error in register request: " + data.error)
             }
+
             if (!data.response.result){
-                console.info("Register didn't succeed")
+                throw new Error("Register didn't succeed")
             }
             
             lifetime?.onSuccess?.()
@@ -117,15 +124,18 @@ export class AuthModel{
         }).catch((reason)=>{
             console.error("Exception in register request")
             console.error(reason)
+            lifetime?.onError?.()
         
 
+        }).then(()=>{
+            lifetime?.onEnd?.()
         })
         
         
         
     }
 
-    async getUserSessionToken(lifetime?: { onSuccess?: ()=>void, onStart?: ()=>void }){
+    async getUserSessionToken(lifetime?: functionLifetimeCallbacks){
         lifetime?.onStart?.()
         await fetch(
             BUNNID_API_URL + "auth/get_session", 
@@ -138,20 +148,21 @@ export class AuthModel{
             }
             
         ).then((response)=>{
+            if (!response.ok){
+                throw new Error("Api call not successfull with status code: " + response.status)
+            }
             return response.json()
         }).then((data: ApiRequestResult<UserSessionTokenResponse>)=>{
             if (data.error){
-                console.error("Error in UserSessionTokenResponse request: " + data.error)
-                return
+                throw new Error("Error in UserSessionTokenResponse request: " + data.error)
             }
 
             if (
                 data.response.session_token == null
             ){
-                console.info("Didn't receive token " + data.response.session_token)
+                throw new Error("Didn't receive token")
             }
-            else{
-                
+            else{ 
                 this.setSessionToken(data.response.session_token)
                 lifetime?.onSuccess?.()
             }
@@ -159,6 +170,9 @@ export class AuthModel{
         }).catch((reason)=>{
             console.log("Exception in get user session token request: ")
             console.log(reason)
+            lifetime?.onError?.()
+        }).then(()=>{
+            lifetime?.onEnd?.()
         })
     }
 }

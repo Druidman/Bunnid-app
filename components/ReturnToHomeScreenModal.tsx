@@ -21,7 +21,7 @@ const ReturnToHomeScreenModal = ({returnReason} : {returnReason: string}) => {
             <div className="bg-[var(--bg)] w-full h-[fitcontent]  flex  gap-5 flex-col justify-start items-center">
                 <Text className="!text-[var(--text-muted)]">{returnReason}</Text>
                 <div className="w-full h-[fitcontent]">
-                    <AccentButton onClick={()=>navigate("/")}>Home screen</AccentButton>
+                    <AccentButton onClick={()=>navigate("/app")}>Home screen</AccentButton>
                 </div>
 
                

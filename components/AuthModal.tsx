@@ -8,6 +8,7 @@ import AccentButton from "./AccentButton"
 import { FormInput, PasswordFormInput } from "./FormInputs"
 import { AuthModel } from "../objects/auth/AuthModel"
 import { Loading } from "./LoadingOverlay"
+import toast from "react-hot-toast"
 
 
 
@@ -51,32 +52,74 @@ const AuthModal = ({authModel} : {authModel: AuthModel}) => {
         if (!startAuth) return;
 
         const login = async () =>{
-            
-            await authModel.login(LoginForm, {onStart: loading.open, onSuccess: ()=>{
-                navigate("/app/app")
-                close()
-                loading.close()
-                authModel.onClose()
-            }})
-            
-            
+            return new Promise<boolean>((resolve, reject)=>{
+                authModel.login(LoginForm, {
+                    onStart: loading.open, 
+                    onSuccess: ()=>{
+                        navigate("/app/app")
+                        close()
+                        authModel.onClose()
+
+                        resolve(true)
+                    },
+                    onError: ()=>{
+                        close()
+                        authModel.onClose()
+                        reject()
+                    },
+                    onEnd: ()=>{
+                        loading.close()
+                    }
+                    
+                })
+            })
+                
         }
 
         const register = async () =>{
-            await authModel.register(RegisterForm, {onStart: loading.open, onSuccess: ()=>{
-                close()
-                loading.close()
-                authModel.onClose()
-            }})
+            return new Promise<boolean>((resolve, reject)=>{
+                authModel.register(RegisterForm, {
+                    onStart: loading.open, 
+                    onSuccess: ()=>{
+                        close()
+                        authModel.onClose()
+
+                        resolve(true)
+                    },
+                    onError: ()=>{
+                        
+                        reject()
+                    },
+                    onEnd: ()=>{
+                        loading.close()
+                    }
+                   
+                })
+            })
+            
             
         }
 
         if (authModel.modalType == "login"){
-            login()
+            toast.promise(login(), {
+                loading: "Logging in...",
+                success: "Successfully logged in!",
+                error: "Smth went wrong in login",
+            }
+            )
+            
 
         }
         else if (authModel.modalType == "register"){
-            register()
+            toast.promise(register(), 
+                {
+                    loading: "Register...",
+                    success: "Successfully register an account!",
+                    error: "Smth went wrong in register"
+                }
+                
+                
+                )
         }
         else {
             console.log("Wrong modalType")
