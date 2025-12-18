@@ -20,7 +20,8 @@ type GlobalsContextType = {
     wsMessageToSend: WsMessage<any>,
     setWsMessageToSend: (msg: WsMessage<any>)=>void,
     eventPool: React.RefObject<EventPool | null>,
-    wsMsgResponseWaiters: React.RefObject<{[key: number] : {callback: (response: WsMessagePayload<any>)=>void}}>
+    wsMsgResponseWaiters: React.RefObject<{[key: number] : {callback: (response: WsMessagePayload<any>)=>void}}>,
+    maxConversationMsgLength: number
 
 
 }
@@ -39,6 +40,7 @@ export const GlobalsContext = createContext<GlobalsContextType>(
         setWsMessageToSend: ()=>{},
         eventPool: {current: null},
         wsMsgResponseWaiters: {current: {}},
+        maxConversationMsgLength: 0
         
     }
 );
@@ -50,6 +52,7 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
     const [windowToSpawn, spawnWindow] = useState<BoxModel | null>(null)
     const [wsMessageToSend, setWsMessageToSend] = useState<WsMessage<any>>(new WsMessage<string>({event: WsEvent.NONE, error: "", data: "", requestId: 0}))
     const eventPool = useRef<EventPool | null>(new EventPool())
+    const maxConversationMsgLength = 50
 
     const wsMsgResponseWaiters = useRef<
         {[key: number]: {callback: (response: WsMessagePayload<any>)=>{}}}
@@ -65,7 +68,8 @@ export const GlobalsContextProvider = ( {children} : {children: React.ReactNode}
                 windowToSpawn, spawnWindow, 
                 wsMessageToSend, setWsMessageToSend,
                 eventPool,
-                wsMsgResponseWaiters
+                wsMsgResponseWaiters,
+                maxConversationMsgLength
             }
         }>
             {children}

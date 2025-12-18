@@ -17,7 +17,17 @@ interface ConversationParams {
 function Conversation({ conversation } : ConversationParams) {
     const [loadingVisible, { open, close}] = useDisclosure(true)
 
-    const { eventPool } = useGlobals()
+    const { eventPool, maxConversationMsgLength } = useGlobals()
+
+    const fitText = (text: string)=>{
+        let textA = [...text]
+        // new lines required
+        for (let i = 1; i<textA.length / maxConversationMsgLength + 1; i++){
+            textA.splice(i*maxConversationMsgLength,0,"\n")
+        }
+        return textA.join('')
+        
+    }
 
     useEffect(()=>{
         if (!conversation) return;
@@ -26,6 +36,8 @@ function Conversation({ conversation } : ConversationParams) {
         conversation.registerMsgListenerToEventPool(eventPool)
         
     },[])
+
+    
     
     return (
 
@@ -53,14 +65,15 @@ function Conversation({ conversation } : ConversationParams) {
                             
                                 `}
                             >
-                                <h1 className="
-                                    w-[max-content]
+                                <p className="
+                                    overflow-auto
+                                    w-[min-content]
                                     h-[100%]
                                     px-[15px]
                                     rounded-[20px] 
                                     bg-[var(--bg-dark)] 
                                     text-[var(--text)]"
-                                >{msg.content}</h1>
+                                >{fitText(msg.content)}</p>
                             </div>
                         ))}
 
